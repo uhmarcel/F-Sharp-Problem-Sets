@@ -1,6 +1,6 @@
 ﻿open System
 
-let rec fibonacci (n : int) : int =
+let rec fibonacci (n : int) : int =     // fibonacci recursive function
     if n = 0 then 0
     elif n = 1 then 1
     else fibonacci(n-1) + fibonacci(n-2) 
@@ -8,9 +8,15 @@ let rec fibonacci (n : int) : int =
 [<EntryPoint>]
 let main argv =
     printfn "Fibonacci Sequence"
-    printf "Enter kth number for fibonacci sequence: "
+    printfn "Enter 'exit' at any moment to stop."
 
-    let k = Console.ReadLine |> int
+    while 1 = 1 do                      // continuous loop
+        printf "Enter kth number for fibonacci sequence : "
+
+        let input = Console.ReadLine()
+        if input = "exit" then Environment.Exit(0)  // exit upon request
     
-    Console.ReadKey() |> ignore
+        let k = input |> int
+        printfn "fibonacci(%i) = %i" k (fibonacci(k))   // display fibonacci number
+    
     0 // return an integer exit code
