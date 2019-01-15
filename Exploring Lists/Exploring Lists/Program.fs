@@ -42,5 +42,9 @@ let main argv =
     printfn "Average in C = %i" (average C)
     printfn "Average in squares of C = %i" (average (squareList C))
 
+    let testing =
+        1::2::3::4::[]
+    printfn "\n\n testing = %A" testing
+
     Console.ReadKey() |> ignore
     0 // return an integer exit code
