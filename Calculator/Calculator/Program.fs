@@ -7,6 +7,24 @@ let sub a b = a - b
 let mul a b = a * b
 let div a b = a / b
 
+// Curried function, returns curried operation chosen by user
+let calcFunction operation =  
+    match operation with
+    | "1" -> sum
+    | "2" -> sub
+    | "3" -> mul
+    | "4" -> div
+    | _ -> exit
+
+// Returns the operation's symbol for display
+let getOperatorSymbol operation =
+    match operation with
+    | "1" -> "+"
+    | "2" -> "-"
+    | "3" -> "x"
+    | "4" -> "/"
+    | _ -> "?"
+
 // Function to format the output (e.g 4 x 6 = 24)
 let formatOutput (a: int) (b: int) (operator: string) (result: int) =
     (string) a + " " + operator + " " + (string) b + " = " + (string) result
@@ -36,17 +54,8 @@ let main argv =
         printf "Enter second operand: "
         let b = Console.ReadLine() |> int
     
-        // Match user selection to the proper function
-        let result =
-            match selection with
-            | "1" -> formatOutput a b "+" (sum a b)
-            | "2" -> formatOutput a b "-" (sub a b)
-            | "3" -> formatOutput a b "x" (mul a b)
-            | "4" -> formatOutput a b "/" (div a b)
-            | _ -> "Invalid selection"
-
         // Display result
-        printfn "Result: %s \n" result
+        printfn "Result: %s \n" (formatOutput a b (getOperatorSymbol selection) (calcFunction selection a b))
 
     Console.ReadKey() |> ignore
     0
