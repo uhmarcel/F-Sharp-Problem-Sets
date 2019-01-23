@@ -6,14 +6,8 @@ open System
 
 let MAX = 2000000I
 
-let rec isDivisible list n =
-    match list with
-    | head :: tail -> head % n <> 0 & isDivisible tail n
-    | [] -> true
-
 let isPrime n = 
-    isDivisible [2..n-1] n
-
+    [2..n-1] |> List.forall (fun elem -> elem % n <> 0)
 
 [<EntryPoint>]
 let main argv =
