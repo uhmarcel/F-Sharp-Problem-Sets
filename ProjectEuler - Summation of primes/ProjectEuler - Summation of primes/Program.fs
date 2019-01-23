@@ -4,16 +4,16 @@
 
 open System
 
-let MAX = 10000
+let MAX = 50000
 
-let rec sieveOfErat (list: int list) (n: int) (limit: int) =
+let rec sieveOfErat list n limit =
     if n = limit then 
         list
     else
-        list |> List.filter (fun elem -> elem % n <> 0) |> sieveOfErat <|| (n+1, limit)
+        list |> List.filter (fun elem -> elem = n || elem % n <> 0) |> sieveOfErat <|| (n+1, limit)
     
 let primesUpTo n =
-    sieveOfErat [2..n] n
+    sieveOfErat [2..n] 2 n
     
 [<EntryPoint>]
 let main argv =
@@ -22,6 +22,8 @@ let main argv =
     printfn "Find the sum of all the primes below two million \n"
 
     let solution = primesUpTo MAX |> List.sum
+
+    // printfn "Testing: %A" <| primesUpTo MAX
 
     printfn "Sum of primes up to %i = %i" MAX solution
 
