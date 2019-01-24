@@ -4,11 +4,13 @@
 
 open System
 
-let MAX = 1000000uL
+let MAX = 2000000uL
 
 let rec sieveOfErat (list: uint64 list) (n: uint64) (limit: uint64) =
     if n = limit then 
         list
+    elif not (list |> List.contains n) then
+        sieveOfErat list (n+1uL) limit
     else
         list |> List.filter (fun elem -> elem = n || elem % n <> 0uL) |> sieveOfErat <|| (n+1uL, limit)
     
