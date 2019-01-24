@@ -4,16 +4,16 @@
 
 open System
 
-let MAX = 50000
+let MAX = 1000000uL
 
-let rec sieveOfErat list n limit =
+let rec sieveOfErat (list: uint64 list) (n: uint64) (limit: uint64) =
     if n = limit then 
         list
     else
-        list |> List.filter (fun elem -> elem = n || elem % n <> 0) |> sieveOfErat <|| (n+1, limit)
+        list |> List.filter (fun elem -> elem = n || elem % n <> 0uL) |> sieveOfErat <|| (n+1uL, limit)
     
 let primesUpTo n =
-    sieveOfErat [2..n] 2 n
+    sieveOfErat [2uL..n] 2uL (uint64 <| sqrt(float n))
     
 [<EntryPoint>]
 let main argv =
@@ -23,8 +23,7 @@ let main argv =
 
     let solution = primesUpTo MAX |> List.sum
 
-    // printfn "Testing: %A" <| primesUpTo MAX
-
+    printfn "Testing: %A" <| primesUpTo MAX
     printfn "Sum of primes up to %i = %i" MAX solution
 
     Console.ReadKey() |> ignore
