@@ -4,14 +4,19 @@
 
 open System
 
-let rec factorial n =
+let rec factorial (n: bigint) =
     match n with
-    | 0 | 1 -> 1
-    | _ -> n * factorial (n-1)
+    | _ when n = 0I || n = 1I -> 1I
+    | _ -> n * factorial (n - 1I)
 
 [<EntryPoint>]
 let main argv =
-    let test = 5
-    printfn "Factorial(%i) = %i" test (factorial test)
+    printfn "ProjectEuler - Problem 20"
+    printfn "Factorial digit sum"
+    printfn "Find the sum of the digits in the number 100! \n"
+
+    let x = 100I
+    printfn "Factorial(%A) = %A" x (factorial x)
+
     Console.ReadKey() |> ignore
     0
