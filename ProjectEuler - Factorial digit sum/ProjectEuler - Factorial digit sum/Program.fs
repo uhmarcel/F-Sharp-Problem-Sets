@@ -9,6 +9,11 @@ let rec factorial (n: bigint) =
     | _ when n = 0I || n = 1I -> 1I
     | _ -> n * factorial (n - 1I)
 
+let rec sumDigits (n: bigint) =
+    match n with
+    | _ when n = 0I -> 0I
+    | _ -> n % 10I + sumDigits (n / 10I)
+
 [<EntryPoint>]
 let main argv =
     printfn "ProjectEuler - Problem 20"
@@ -16,7 +21,8 @@ let main argv =
     printfn "Find the sum of the digits in the number 100! \n"
 
     let x = 100I
-    printfn "Factorial(%A) = %A" x (factorial x)
+    printfn "Factorial(%A) =\n%A\n" x (factorial x)
+    printfn "Sum of all digits = %A" <| (sumDigits <| factorial x)
 
     Console.ReadKey() |> ignore
     0
