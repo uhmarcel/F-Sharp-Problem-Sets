@@ -39,7 +39,19 @@ let main argv =
     let F = fun xs -> List.map (+) xs
     printfn "Problem 13:"
     printfn "fun xs -> List.map (+) xs, where xs = %A, is %A" A (F A) 
-        // returns a list of functions, where each increments the input parameter by the amount of the element from which it was formed
+        // returns a list of functions, where each increments the input parameter 
+        // by the amount of the element from which it was formed
+
+
+    // Test for problem 16
+    printfn "Problem 15:"
+    printfn "Consider a fraction a/b to be defined as (int * int)."
+    printfn "Define addition and multiplication as .+ and .*"
+
+    let (.+) (a,b) (c,d) = (a*d + c*b, b * d)
+    let (.*) (a,b) (c,d) = (a*c, b*d)
+    printfn "1/2 + 1/2 = %A" ((1,2) .+ (1,2))
+    printfn "1/2 * 1/2 = %A" ((1,2) .* (1,2))
 
     Console.ReadKey() |> ignore
     0
