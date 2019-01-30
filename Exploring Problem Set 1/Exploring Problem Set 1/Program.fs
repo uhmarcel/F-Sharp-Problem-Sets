@@ -44,20 +44,39 @@ let main argv =
 
 
     // Test for problem 16
-    printfn "Problem 15:"
+    printfn "Problem 16:"
     printfn "Consider a fraction a/b to be defined as (int * int)."
     printfn "Define addition and multiplication as .+ and .*"
 
     let rec gcd = function
         | (a, 0) -> a
         | (a, b) -> gcd (b, a % b)
+    
     let simplify (x,y) = (x / gcd(x,y), y / gcd(x,y))
-
     let (.+) (a,b) (c,d) = (a*d + c*b, b * d) |> simplify 
     let (.*) (a,b) (c,d) = (a*c, b*d) |> simplify
     
     printfn "8/3 + 4/3 = %A" ((8,3) .+ (4,3))
-    printfn "8/2 * 4/12 = %A" ((8,2) .* (4,12))
+    printfn "8/2 * 4/12 = %A \n" ((8,2) .* (4,12))
 
+    // Test for problem 17
+    printfn "Problem 17:"
+    printfn "Create a function revlists that reverses all lists."
+
+    let revlists = List.map List.rev
+    let A = [[0;1;1];[3;2];[];[5]]
+    printfn "revlists(%A) = %A\n" A (revlists A)
+
+    // Test for problem 18
+    printfn "Problem 18:"
+    printfn "Create a function interleave that interleaves two lists."
+
+    let rec interleave = function
+        | [], ys -> ys
+        | xs, [] -> xs
+        | (x::xs, y::ys) -> x::y::interleave (xs,ys)  
+    let A = [1;2;3;4]
+    let B = [5;6]
+    printfn "interleave%A = %A" (A,B) (interleave (A,B))
     Console.ReadKey() |> ignore
     0
