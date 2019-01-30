@@ -59,6 +59,7 @@ let main argv =
     printfn "8/3 + 4/3 = %A" ((8,3) .+ (4,3))
     printfn "8/2 * 4/12 = %A \n" ((8,2) .* (4,12))
 
+
     // Test for problem 17
     printfn "Problem 17:"
     printfn "Create a function revlists that reverses all lists."
@@ -66,6 +67,7 @@ let main argv =
     let revlists = List.map List.rev
     let A = [[0;1;1];[3;2];[];[5]]
     printfn "revlists(%A) = %A\n" A (revlists A)
+
 
     // Test for problem 18
     printfn "Problem 18:"
@@ -77,6 +79,36 @@ let main argv =
         | (x::xs, y::ys) -> x::y::interleave (xs,ys)  
     let A = [1;2;3;4]
     let B = [5;6]
-    printfn "interleave%A = %A" (A,B) (interleave (A,B))
+    printfn "interleave%A = %A\n" (A,B) (interleave (A,B))
+    
+
+    // Test for problem 19
+    printfn "Problem 19:"
+    let gencut n xs = ([for i in 0..n-1 -> List.item i xs], [for i in n..(List.length xs)-1 -> List.item i xs])
+    let cut xs = gencut ((List.length xs) / 2) xs
+    
+    let A = [1;2;3;4;5;6;7;8]
+    printfn "cut %A -> %A\n" A (cut A)
+    
+
+    // Test for problem 20
+    printfn "Problem 20"
+    let shuffle xs = xs |> cut |> interleave
+    printfn "shuffle %A -> %A\n" A (shuffle A)
+
+    // Test for problem 21
+    printfn "Problem 21"
+    
+    let rec countshufflesAux xs ys = 
+        if xs = ys then 0
+        else 1 + countshufflesAux (shuffle xs) ys
+
+    let countshuffles n =
+        let ys = [1..n]
+        1 + countshufflesAux (shuffle ys) ys
+    
+    printfn "countshuffles 4 -> %i" (countshuffles 4) 
+
+
     Console.ReadKey() |> ignore
     0
