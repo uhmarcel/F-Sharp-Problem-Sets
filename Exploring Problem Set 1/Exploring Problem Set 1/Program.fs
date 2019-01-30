@@ -38,7 +38,7 @@ let main argv =
     // Test for problem 13
     let F = fun xs -> List.map (+) xs
     printfn "Problem 13:"
-    printfn "fun xs -> List.map (+) xs, where xs = %A, is %A" A (F A) 
+    printfn "fun xs -> List.map (+) xs, where xs = %A, is %A\n" A (F A) 
         // returns a list of functions, where each increments the input parameter 
         // by the amount of the element from which it was formed
 
@@ -48,10 +48,16 @@ let main argv =
     printfn "Consider a fraction a/b to be defined as (int * int)."
     printfn "Define addition and multiplication as .+ and .*"
 
-    let (.+) (a,b) (c,d) = (a*d + c*b, b * d)
-    let (.*) (a,b) (c,d) = (a*c, b*d)
-    printfn "1/2 + 1/2 = %A" ((1,2) .+ (1,2))
-    printfn "1/2 * 1/2 = %A" ((1,2) .* (1,2))
+    let rec gcd = function
+        | (a, 0) -> a
+        | (a, b) -> gcd (b, a % b)
+    let simplify (x,y) = (x / gcd(x,y), y / gcd(x,y))
+
+    let (.+) (a,b) (c,d) = (a*d + c*b, b * d) |> simplify 
+    let (.*) (a,b) (c,d) = (a*c, b*d) |> simplify
+    
+    printfn "8/3 + 4/3 = %A" ((8,3) .+ (4,3))
+    printfn "8/2 * 4/12 = %A" ((8,2) .* (4,12))
 
     Console.ReadKey() |> ignore
     0
