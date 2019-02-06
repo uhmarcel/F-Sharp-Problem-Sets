@@ -12,6 +12,13 @@ let rec myListSum = function
     | [] -> 0
     | x::xs -> x + myListSum xs
 
+let rec myListAppend xs ys = 
+    match xs, ys with
+        | [], [] -> []
+        | [], y::ys -> y :: myListAppend [] ys
+        | x::xs, ys -> x :: myListAppend xs ys
+
+
 [<EntryPoint>]
 let main argv =    
     let A = [1..5]
@@ -26,6 +33,9 @@ let main argv =
     
     printfn " List.sum A = %A" <| List.sum A
     printfn "myListSum A = %A\n" <| myListSum A
-    
+
+    printfn " List.append A B = %A" <| List.append A B 
+    printfn "myListAppend A B = %A" <| myListAppend A B
+
     Console.ReadKey() |> ignore
     0
