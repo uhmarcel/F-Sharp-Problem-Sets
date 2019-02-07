@@ -8,9 +8,11 @@ let rec myListMap f = function
     | [] -> []
     | x::xs -> f x :: (myListMap f xs)
 
-let rec myListSum = function
-    | [] -> 0
-    | x::xs -> x + myListSum xs
+let inline myListSum xs = 
+    let rec aux = function
+        | [] -> LanguagePrimitives.GenericZero
+        | x::xs -> x + aux xs
+    aux xs
 
 let rec myListAppend xs ys = 
     match xs, ys with
@@ -28,43 +30,49 @@ let rec myListReduce f = function
     | [x] -> x 
     | x::xs -> f x (myListReduce f xs) 
 
-let rec myListLength = function
-    | [] -> 0
-    | _::xs -> 1 + myListLength xs
+let inline myListLength xs = 
+    let rec aux = function
+        | [] -> LanguagePrimitives.GenericZero
+        | _::xs -> LanguagePrimitives.GenericOne + aux xs
+    aux xs
 
-let myListAverage xs =
+let inline myListAverage xs =
     myListSum xs / myListLength xs
+
+let rec myListCollect f = function
+    | [] -> []
+    | x::xs -> f x @ myListCollect f xs
 
 [<EntryPoint>]
 let main argv =    
     let A = [1..5]
     let B = [6..10]
     let C = [1.1; 3.4; 6.2; 2.1]
-    let x = float(2)
 
     printfn "Rewriting List Library - Testing"
     printfn "List A: %A" A
-    printfn "List B: %A\n" B
-    printfn "List C: %A" C
+    printfn "List B: %A" B
+    printfn "List C: %A\n" C
 
     let f x = x * x 
     let g x y = x * y
+    let h x = [x;x]
     
     // Map
     printfn " List.map f A = %A" <| List.map f A
     printfn "myListMap f A = %A\n" <| myListMap f A
     
     // Sum
-    printfn " List.sum A = %A" <| List.sum A
-    printfn "myListSum A = %A\n" <| myListSum A
+    printfn " List.sum A = %A" <| List.sum C
+    printfn "myListSum A = %A\n" <| myListSum C
 
     // Length
     printfn " List.length A = %A" <| List.length A
     printfn "myListLength A = %A\n" <| myListLength A
 
     // Average
-    printfn " List.average A = %A" <| List.average C
-    printfn "myListaverage A = %A\n" <| myListAverage A
+    printfn " List.average C = %A" <| List.average C
+    printfn "myListaverage C = %A\n" <| myListAverage C
     // Note: myAverage works only for ints, while list.average works on floats. 
 
     // Append
@@ -77,8 +85,11 @@ let main argv =
 
     // Reduce
     printfn " List.reduce f A = %A" <| List.reduce g A
-    printfn "myListReduce f A = %A" <| myListReduce g A
+    printfn "myListReduce f A = %A\n" <| myListReduce g A
 
+    // Collect
+    printfn " List.collect f A = %A" <| List.collect h A
+    printfn "myListCollect f A = %A\n" <| myListCollect h A
 
 
     Console.ReadKey() |> ignore
