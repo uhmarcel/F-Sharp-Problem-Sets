@@ -23,6 +23,11 @@ let rec myListMap2 f xs ys =
         | [], _ | _, [] -> []
         | x::xs, y::ys -> f x y :: myListMap2 f xs ys
 
+let rec myListReduce f = function
+    | [] -> failwith "Can't apply function to empty list"
+    | [x] -> x 
+    | x::xs -> f x (myListReduce f xs) 
+
 [<EntryPoint>]
 let main argv =    
     let A = [1..5]
@@ -43,8 +48,13 @@ let main argv =
     printfn "myListAppend A B = %A\n" <| myListAppend A B
 
     let f x y = x * y
+
     printfn " List.map2 f A B = %A" <| List.map2 f A B
-    printfn "myListmap2 f A B = %A" <| myListMap2 f A B
+    printfn "myListMap2 f A B = %A\n" <| myListMap2 f A B
+
+    printfn " List.reduce f A = %A" <| List.reduce f A
+    printfn "myListReduce f A = %A" <| myListReduce f A
+
 
     Console.ReadKey() |> ignore
     0
