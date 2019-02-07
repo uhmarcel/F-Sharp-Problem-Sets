@@ -4,6 +4,14 @@
 
 open System
 
+let myListHead = function
+    | [] -> []
+    | x::_ -> x
+
+let myListTail = function
+    | [] -> []
+    | _::xs -> xs
+
 let rec myListMap f = function
     | [] -> []
     | x::xs -> f x :: (myListMap f xs)
@@ -43,16 +51,22 @@ let rec myListCollect f = function
     | [] -> []
     | x::xs -> f x @ myListCollect f xs
 
+let rec myListConcat = function
+    | [] -> []
+    | x::xs -> x @ myListConcat xs
+
 [<EntryPoint>]
 let main argv =    
     let A = [1..5]
     let B = [6..10]
     let C = [1.1; 3.4; 6.2; 2.1]
+    let D = [[1..3]; [2..4]; [1..2]]
 
     printfn "Rewriting List Library - Testing"
     printfn "List A: %A" A
     printfn "List B: %A" B
-    printfn "List C: %A\n" C
+    printfn "List C: %A" C
+    printfn "List D: %A\n" D
 
     let f x = x * x 
     let g x y = x * y
@@ -73,7 +87,6 @@ let main argv =
     // Average
     printfn " List.average C = %A" <| List.average C
     printfn "myListaverage C = %A\n" <| myListAverage C
-    // Note: myAverage works only for ints, while list.average works on floats. 
 
     // Append
     printfn " List.append A B = %A" <| List.append A B 
@@ -91,6 +104,9 @@ let main argv =
     printfn " List.collect f A = %A" <| List.collect h A
     printfn "myListCollect f A = %A\n" <| myListCollect h A
 
+    // Concat
+    printfn " List.concat D = %A" <| List.concat D
+    printfn "myListConcat D = %A" <| myListConcat D
 
     Console.ReadKey() |> ignore
     0
