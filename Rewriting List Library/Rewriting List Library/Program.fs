@@ -18,24 +18,33 @@ let rec myListAppend xs ys =
         | [], y::ys -> y :: myListAppend [] ys
         | x::xs, ys -> x :: myListAppend xs ys
 
+let rec myListMap2 f xs ys = 
+    match xs, ys with
+        | [], _ | _, [] -> []
+        | x::xs, y::ys -> f x y :: myListMap2 f xs ys
 
 [<EntryPoint>]
 let main argv =    
     let A = [1..5]
-    let B = [7..9]
+    let B = [6..10]
 
     printfn "Rewriting List Library - Testing"
     printfn "List A: %A" A
     printfn "List B: %A\n" B
 
-    printfn " List.map f A = %A" <| List.map (fun x -> x * x) A
-    printfn "myListMap f A = %A\n" <| myListMap (fun x -> x * x) A
+    let f x = x * x 
+    printfn " List.map f A = %A" <| List.map f A
+    printfn "myListMap f A = %A\n" <| myListMap f A
     
     printfn " List.sum A = %A" <| List.sum A
     printfn "myListSum A = %A\n" <| myListSum A
 
     printfn " List.append A B = %A" <| List.append A B 
-    printfn "myListAppend A B = %A" <| myListAppend A B
+    printfn "myListAppend A B = %A\n" <| myListAppend A B
+
+    let f x y = x * y
+    printfn " List.map2 f A B = %A" <| List.map2 f A B
+    printfn "myListmap2 f A B = %A" <| myListMap2 f A B
 
     Console.ReadKey() |> ignore
     0
