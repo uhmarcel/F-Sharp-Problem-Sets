@@ -3,6 +3,7 @@
 // about recursion and F#.
 
 open System
+open System.Runtime.Serialization
 
 let myListHead = function
     | [] -> []
@@ -55,10 +56,26 @@ let rec myListConcat = function
     | [] -> []
     | x::xs -> x @ myListConcat xs
 
+let rec myListItem n = function
+    | [] -> failwith "Out of bounds"
+    | x::_ when n = 0 -> x
+    | _::xs -> myListItem (n-1) xs
+
+let inline myListSort xs =
+    let rec swapBack = function
+        | [] -> []
+        | x::y::xs when x > y -> y :: swapBack (x::xs) 
+        | xs -> xs
+    let rec sort n = function 
+        | [] -> []
+        | xs when n = 0 -> xs
+        | xs -> swapBack xs
+    sort (myListLength xs) xs
+
 [<EntryPoint>]
 let main argv =    
     let A = [1..5]
-    let B = [6..10]
+    let B = [4;1;5;7;9]
     let C = [1.1; 3.4; 6.2; 2.1]
     let D = [[1..3]; [2..4]; [1..2]]
 
@@ -106,7 +123,15 @@ let main argv =
 
     // Concat
     printfn " List.concat D = %A" <| List.concat D
-    printfn "myListConcat D = %A" <| myListConcat D
+    printfn "myListConcat D = %A\n" <| myListConcat D
+
+    // Item
+    printfn " List.item 2 A = %A" <| List.item 2 A
+    printfn "myListItem 2 A = %A\n" <| myListItem 2 A
+
+    // Sort
+    printfn " List.sort B = %A" <| List.sort B
+    printfn "myListSort B = %A\n" <| myListSort B
 
     Console.ReadKey() |> ignore
     0
