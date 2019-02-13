@@ -89,6 +89,9 @@ let myListFindIndex f xs =
         | _::xs -> findIndexAux (n+1) f xs
     findIndexAux 0 f xs
 
+let myListPartition f xs = 
+    (myListFilter f xs, myListFilter (fun e -> not (f e)) xs)
+
 [<EntryPoint>]
 let main argv =    
     let A = [1..5]
@@ -163,7 +166,9 @@ let main argv =
     printfn " List.findIndex f A = %A" <| List.findIndex z A
     printfn "myListFindIndex f A = %A\n" <| myListFindIndex z A
 
-
+    // Partition
+    printfn " List.partition f A = %A" <| List.partition z A
+    printfn "myListPartition f A = %A\n" <| myListPartition z A
 
     Console.ReadKey() |> ignore
     0
