@@ -82,6 +82,13 @@ let rec myListContains e = function
     | x::_ when x = e -> true
     | _::xs -> myListContains e xs
 
+let myListFindIndex f xs = 
+    let rec findIndexAux n f = function
+        | [] -> failwith "Element not found"
+        | x::_ when f x -> n
+        | _::xs -> findIndexAux (n+1) f xs
+    findIndexAux 0 f xs
+
 [<EntryPoint>]
 let main argv =    
     let A = [1..5]
@@ -151,6 +158,10 @@ let main argv =
     // Contains
     printfn " List.contains 2 A = %A" <| List.contains 2 A
     printfn "myListContains 2 A = %A\n" <| myListContains 2 A
+
+    // FindIndex
+    printfn " List.findIndex f A = %A" <| List.findIndex z A
+    printfn "myListFindIndex f A = %A\n" <| myListFindIndex z A
 
 
 
