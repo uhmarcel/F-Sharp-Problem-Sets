@@ -72,6 +72,11 @@ let inline myListSort xs =
         | xs -> swapBack xs
     sort (myListLength xs) xs
 
+let rec myListFilter f = function
+    | [] -> []
+    | x::xs when f x -> x :: myListFilter f xs
+    | _::xs -> myListFilter f xs
+
 [<EntryPoint>]
 let main argv =    
     let A = [1..5]
@@ -88,6 +93,7 @@ let main argv =
     let f x = x * x 
     let g x y = x * y
     let h x = [x;x]
+    let z x = x % 2 = 0
     
     // Map
     printfn " List.map f A = %A" <| List.map f A
@@ -132,6 +138,10 @@ let main argv =
     // Sort
     printfn " List.sort B = %A" <| List.sort B
     printfn "myListSort B = %A\n" <| myListSort B
+
+    // Filter
+    printfn " List.filter A = %A" <| List.filter z A
+    printfn "myListFilter A = %A\n" <| myListFilter z A
 
     Console.ReadKey() |> ignore
     0
