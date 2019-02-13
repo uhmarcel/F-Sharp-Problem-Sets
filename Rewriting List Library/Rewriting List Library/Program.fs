@@ -77,6 +77,11 @@ let rec myListFilter f = function
     | x::xs when f x -> x :: myListFilter f xs
     | _::xs -> myListFilter f xs
 
+let rec myListContains e = function
+    | [] -> false
+    | x::_ when x = e -> true
+    | _::xs -> myListContains e xs
+
 [<EntryPoint>]
 let main argv =    
     let A = [1..5]
@@ -140,8 +145,14 @@ let main argv =
     printfn "myListSort B = %A\n" <| myListSort B
 
     // Filter
-    printfn " List.filter A = %A" <| List.filter z A
-    printfn "myListFilter A = %A\n" <| myListFilter z A
+    printfn " List.filter f A = %A" <| List.filter z A
+    printfn "myListFilter f A = %A\n" <| myListFilter z A
+
+    // Contains
+    printfn " List.contains 2 A = %A" <| List.contains 2 A
+    printfn "myListContains 2 A = %A\n" <| myListContains 2 A
+
+
 
     Console.ReadKey() |> ignore
     0
