@@ -92,12 +92,16 @@ let myListFindIndex f xs =
 let myListPartition f xs = 
     (myListFilter f xs, myListFilter (fun e -> not (f e)) xs)
 
+let myListUnzip xs = 
+    (myListMap fst xs, myListMap snd xs)
+
 [<EntryPoint>]
 let main argv =    
     let A = [1..5]
     let B = [4;1;5;7;9]
     let C = [1.1; 3.4; 6.2; 2.1]
     let D = [[1..3]; [2..4]; [1..2]]
+    let E = [(1,2);(2,4);(5,1)]
 
     printfn "Rewriting List Library - Testing"
     printfn "List A: %A" A
@@ -169,6 +173,10 @@ let main argv =
     // Partition
     printfn " List.partition f A = %A" <| List.partition z A
     printfn "myListPartition f A = %A\n" <| myListPartition z A
+
+    // Unzip
+    printfn " List.unzip E = %A" <| List.unzip E
+    printfn "myListUnzip E = %A\n" <| myListUnzip E
 
     Console.ReadKey() |> ignore
     0
