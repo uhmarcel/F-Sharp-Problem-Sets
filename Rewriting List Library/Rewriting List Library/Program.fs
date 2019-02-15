@@ -101,6 +101,11 @@ let myListUnzip3 xs =
         | (a,b,c)::xs -> myUnzip3Aux (acc1 @ [a], acc2 @ [b], acc3 @ [c]) xs
     myUnzip3Aux ([],[],[]) xs
 
+let myListIndexed xs =
+    let rec indexedAux n = function
+        | [] -> []
+        | x::xs -> (n, x) :: indexedAux (n+1) xs
+    indexedAux 0 xs
 
 [<EntryPoint>]
 let main argv =    
@@ -189,5 +194,10 @@ let main argv =
     // Unzip3
     printfn " List.unzip3 F = %A" <| List.unzip3 F
     printfn "myListUnzip3 F = %A\n" <| myListUnzip3 F
+
+    // Indexed
+    printfn " List.indexed B = %A" <| List.indexed B
+    printfn "myListIndexed B = %A\n" <| myListIndexed B
+
     Console.ReadKey() |> ignore
     0
