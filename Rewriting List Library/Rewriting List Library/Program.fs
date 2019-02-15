@@ -95,6 +95,13 @@ let myListPartition f xs =
 let myListUnzip xs = 
     (myListMap fst xs, myListMap snd xs)
 
+let myListUnzip3 xs = 
+    let rec myUnzip3Aux (acc1, acc2, acc3) = function
+        | [] -> (acc1, acc2, acc3)
+        | (a,b,c)::xs -> myUnzip3Aux (acc1 @ [a], acc2 @ [b], acc3 @ [c]) xs
+    myUnzip3Aux ([],[],[]) xs
+
+
 [<EntryPoint>]
 let main argv =    
     let A = [1..5]
@@ -102,6 +109,7 @@ let main argv =
     let C = [1.1; 3.4; 6.2; 2.1]
     let D = [[1..3]; [2..4]; [1..2]]
     let E = [(1,2);(2,4);(5,1)]
+    let F = [(1,2,3);(2,4,4);(5,1,4)]
 
     printfn "Rewriting List Library - Testing"
     printfn "List A: %A" A
@@ -177,6 +185,9 @@ let main argv =
     // Unzip
     printfn " List.unzip E = %A" <| List.unzip E
     printfn "myListUnzip E = %A\n" <| myListUnzip E
-
+    
+    // Unzip3
+    printfn " List.unzip3 F = %A" <| List.unzip3 F
+    printfn "myListUnzip3 F = %A\n" <| myListUnzip3 F
     Console.ReadKey() |> ignore
     0
