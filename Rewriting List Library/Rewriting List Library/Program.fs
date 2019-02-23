@@ -106,6 +106,17 @@ let myListIndexed xs =
         | [] -> []
         | x::xs -> (n, x) :: indexedAux (n+1) xs
     indexedAux 0 xs
+    
+let myListAllPairs xs ys =
+    let rec makeTuple n = function
+        | [] -> []
+        | x::xs -> (n,x) :: makeTuple n xs
+    let rec allPairs_aux ys = function
+        | [] -> []
+        | x::xs -> makeTuple x ys @ allPairs_aux ys xs
+    allPairs_aux ys xs
+    
+
 
 [<EntryPoint>]
 let main argv =    
@@ -198,6 +209,10 @@ let main argv =
     // Indexed
     printfn " List.indexed B = %A" <| List.indexed B
     printfn "myListIndexed B = %A\n" <| myListIndexed B
+
+    // AllPairs
+    printfn " List.allPairs A B = %A" <| List.allPairs A B
+    printfn "myListAllPairs A B = %A\n" <| myListAllPairs A B
 
     Console.ReadKey() |> ignore
     0
