@@ -108,15 +108,7 @@ let myListIndexed xs =
     indexedAux 0 xs
     
 let myListAllPairs xs ys =
-    let rec makeTuple n = function
-        | [] -> []
-        | x::xs -> (n,x) :: makeTuple n xs
-    let rec allPairs_aux ys = function
-        | [] -> []
-        | x::xs -> makeTuple x ys @ allPairs_aux ys xs
-    allPairs_aux ys xs
-    
-
+    myListCollect (fun a -> myListMap (fun b -> (a,b)) ys) xs
 
 [<EntryPoint>]
 let main argv =    
