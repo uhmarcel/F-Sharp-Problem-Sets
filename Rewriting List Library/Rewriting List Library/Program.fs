@@ -110,6 +110,14 @@ let myListIndexed xs =
 let myListAllPairs xs ys =
     myListCollect (fun a -> myListMap (fun b -> (a,b)) ys) xs
 
+let myListChunkBySize n xs = 
+    let rec getFirstN m ys = 
+        match m, ys with
+            | _, [] -> []
+            | m, _ when m = 0 -> []
+            | m, y::ys -> y :: getFirstN (m-1) ys
+    getFirstN n xs
+       
 [<EntryPoint>]
 let main argv =    
     let A = [1..5]
@@ -205,6 +213,12 @@ let main argv =
     // AllPairs
     printfn " List.allPairs A B = %A" <| List.allPairs A B
     printfn "myListAllPairs A B = %A\n" <| myListAllPairs A B
+    
+    // ChunkBySize
+    printfn " List.chunkBySize 2 A = %A" <| List.chunkBySize 2 A
+    printfn "myListChunkBySuze 2 A = %A\n" <| myListChunkBySize 2 A
+
+
 
     Console.ReadKey() |> ignore
     0
