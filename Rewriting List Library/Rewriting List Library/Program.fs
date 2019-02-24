@@ -110,17 +110,23 @@ let myListIndexed xs =
 let myListAllPairs xs ys =
     myListCollect (fun a -> myListMap (fun b -> (a,b)) ys) xs
 
+let myListRev xs = 
+    let rec rev_aux = function
+        | ([], acc) -> ([], acc)
+        | (y::ys, acc) -> rev_aux (ys, y::acc)
+    snd (rev_aux (xs,[]))
+
 let myListChunkBySize n xs = 
     let rec getFirstN m = function
         | (accFirst, []) -> (accFirst, [])
         | (accFirst, y::ys) -> if m > 1 then getFirstN (m-1) (accFirst @ [y], ys)
                                else (accFirst @ [y], ys)
-    let rec chunkBySize_aux j = function
+    let rec chunkBySize_aux = function
         | (out, []) -> (out, [])
-        | (out, ys) -> let current = getFirstN j ([], ys)
-                       (fst current @ out, snd current)
-    fst (chunkBySize_aux n ([],xs)) 
-       
+        | (out, ys) -> let current = getFirstN n ([], ys)
+                       chunkBySize_aux(fst current :: out, snd current)
+    myListRev (fst (chunkBySize_aux ([], xs)))
+
 [<EntryPoint>]
 let main argv =    
     let A = [1..5]
@@ -216,7 +222,11 @@ let main argv =
     // AllPairs
     printfn " List.allPairs A B = %A" <| List.allPairs A B
     printfn "myListAllPairs A B = %A\n" <| myListAllPairs A B
-    
+
+    // Rev
+    printfn " List.rev A = %A" <| List.rev A
+    printfn "myListRev A = %A\n" <| myListRev A
+
     // ChunkBySize
     printfn " List.chunkBySize 2 A = %A" <| List.chunkBySize 2 A
     printfn "myListChunkBySuze 2 A = %A\n" <| myListChunkBySize 2 A
