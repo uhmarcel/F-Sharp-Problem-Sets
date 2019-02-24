@@ -111,12 +111,15 @@ let myListAllPairs xs ys =
     myListCollect (fun a -> myListMap (fun b -> (a,b)) ys) xs
 
 let myListChunkBySize n xs = 
-    let rec getFirstN m ys = 
-        match m, ys with
-            | _, [] -> []
-            | m, _ when m = 0 -> []
-            | m, y::ys -> y :: getFirstN (m-1) ys
-    getFirstN n xs
+    let rec getFirstN m = function
+        | (accFirst, []) -> (accFirst, [])
+        | (accFirst, y::ys) -> if m > 1 then getFirstN (m-1) (accFirst @ [y], ys)
+                               else (accFirst @ [y], ys)
+    let rec chunkBySize_aux j = function
+        | (out, []) -> (out, [])
+        | (out, ys) -> let current = getFirstN j ([], ys)
+                       (fst current @ out, snd current)
+    fst (chunkBySize_aux n ([],xs)) 
        
 [<EntryPoint>]
 let main argv =    
