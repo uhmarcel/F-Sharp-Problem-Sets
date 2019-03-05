@@ -13,7 +13,7 @@ type Coordinates<'a> =
     | Threeple of 'a * 'a * 'a
     | Fourple of 'a * 'a * 'a * 'a
 
-
+    
 // b) Instantiate a Tuple of integers, a Threeple of floats and a Fourple of strings.
 
 let A = Tuple (2, 6)
@@ -30,31 +30,56 @@ let rec coordinateReduce f = function
     | Fourple (r,s,t,v) -> Threeple (f r s, t, v) |> coordinateReduce f
 
 
-// d) Call the function with (+) for each of the Coordinates in part (b).
 
-let P1D_Result = (
-    coordinateReduce (+) A,
-    coordinateReduce (+) B,
-    coordinateReduce (+) C
-    )
+let ProblemOne =  
+    printfn "Problem 1\n"
+    printfn "Tuple A = %A" A
+    printfn "Threeple B = %A" B
+    printfn "Fourple C = %A\n" C
+    
+    // d) Call the function with (+) for each of the Coordinates in part (b).
+
+    printfn "coordinateReduce (+) A = %A" <|coordinateReduce (+) A
+    printfn "coordinateReduce (+) B = %A" <|coordinateReduce (+) B
+    printfn "coordinateReduce (+) C = %A\n" <|coordinateReduce (+) C
+
+    // e) Call the function with (-) for the numeric Coordinates in part (b). 
+
+    printfn "coordinateReduce (-) A = %A" <| coordinateReduce (-) A
+    printfn "coordinateReduce (-) B = %A" <| coordinateReduce (-) B
 
 
-// Call the function with (-) for the numeric Coordinates in part (b). 
-// Be sure that your function implements the normal associativity for (-).
+// P2 - Creating a Syntax Parser
+// type TERMINAL = IF|THEN|ELSE|BEGIN|END|PRINT|SEMICOLON|ID|EOF
+// WIP
 
-let P1E_Result = (
-    coordinateReduce (-) A,
-    coordinateReduce (-) B
-    )
+
+// P3 - Implement a parser using...
+// WIP
+
+
+// P4 - Define an F# function curry f that converts an uncurried function to a 
+// curried function, and an F# function uncurry f that does the opposite conversion. 
+
+let ProblemFour =
+    let curry f a b = f (a,b)
+    let uncurry f (a,b) = f a b
+    
+    printfn "Problem 4\n"
+    printfn "%A" <| (+) 2 4                       // No syntax error, it is curried
+    printfn "%A" <| uncurry (+) (2,3)             // No syntax error, it is uncurried
+    printfn "%A" <| curry (fun (x,y) -> x*y) 4 6  // No syntax error, it is curried
+    printfn ""
+    
+    printfn "val curry : f:('a * 'b -> 'c) -> a:'a -> b:'b -> 'c"
+    printfn "val uncurry : f:('a -> 'b -> 'c) -> a:'a * b:'b -> 'c"
 
 
 
 
 [<EntryPoint>]
 let main argv =
-    printfn "Problem Set 2 Workbench"
-    printfn "%A" P1D_Result
-    printfn "%A" P1E_Result
+    ProblemOne
     Console.ReadKey() |> ignore
     0
     
