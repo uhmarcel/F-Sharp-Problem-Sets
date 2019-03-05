@@ -32,22 +32,30 @@ let rec coordinateReduce f = function
 
 // d) Call the function with (+) for each of the Coordinates in part (b).
 
-let inline (++) (x:'a) (y:'a) = x + y 
-
-let P1D_Result = [
-    coordinateReduce (+) A;
-    coordinateReduce (+) B;
+let P1D_Result = (
+    coordinateReduce (+) A,
+    coordinateReduce (+) B,
     coordinateReduce (+) C
-    ]
+    )
+
+
+// Call the function with (-) for the numeric Coordinates in part (b). 
+// Be sure that your function implements the normal associativity for (-).
+
+let P1E_Result = (
+    coordinateReduce (-) A,
+    coordinateReduce (-) B
+    )
+
 
 
 
 [<EntryPoint>]
 let main argv =
     printfn "Problem Set 2 Workbench"
+    printfn "%A" P1D_Result
+    printfn "%A" P1E_Result
     Console.ReadKey() |> ignore
     0
     
-
-// Call the function with (+) for each of the Coordinates in part (b).
-// Call the function with (-) for the numeric Coordinates in part (b). Be sure that your function implements the normal associativity for (-).
+    
