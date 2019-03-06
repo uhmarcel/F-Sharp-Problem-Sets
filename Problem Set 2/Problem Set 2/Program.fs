@@ -50,7 +50,38 @@ let ProblemOne =
 
 
 // P2 - Creating a Syntax Parser
-// type TERMINAL = IF|THEN|ELSE|BEGIN|END|PRINT|SEMICOLON|ID|EOF
+type TERMINAL = IF|THEN|ELSE|BEGIN|END|PRINT|SEMICOLON|ID|EOF
+
+let ProblemTwo =
+    let eat expToken = function
+        | [] -> failwith "Expecting a token but instead program terminated early"
+        | x::xs when x = expToken -> xs
+        | x::_ -> failwith <| sprintf "Expected token %A, but %A found instead" expToken x
+
+    let rec S = function
+        | [] -> failwith "Expecting a token but instead program terminated early"
+        | x::xs -> match x with
+            | IF -> xs |> eat ID |> eat THEN |> S |> eat ELSE |> S
+            | BEGIN -> xs |> S |> L
+            | PRINT -> xs |> eat ID
+            | EOF -> x::xs
+            | _ -> failwith <| sprintf "Expected IF, BEGIN, PRINT or EOF, but got %A" x
+            
+    let rec L = function
+        | [] -> failwith "Expecting a token but instead program terminated early"
+        | x::xs -> match x with
+            | END -> xs
+            | SEMICOLON -> xs |> S |> L
+            | _ -> failwith "Wrong stuff"
+
+     
+       
+            
+    
+    
+
+
+
 // WIP
 
 
@@ -66,10 +97,9 @@ let ProblemFour =
     let uncurry f (a,b) = f a b
     
     printfn "Problem 4\n"
-    printfn "%A" <| (+) 2 4                       // No syntax error, it is curried
-    printfn "%A" <| uncurry (+) (2,3)             // No syntax error, it is uncurried
-    printfn "%A" <| curry (fun (x,y) -> x*y) 4 6  // No syntax error, it is curried
-    printfn ""
+    printf "%A - " <| (+) 2 4                       // No syntax error, it is curried
+    printf "%A - " <| uncurry (+) (2,3)             // No syntax error, it is uncurried
+    printf "%A \n" <| curry (fun (x,y) -> x*y) 4 6  // No syntax error, it is curried
     
     printfn "val curry : f:('a * 'b -> 'c) -> a:'a -> b:'b -> 'c"
     printfn "val uncurry : f:('a -> 'b -> 'c) -> a:'a * b:'b -> 'c"
