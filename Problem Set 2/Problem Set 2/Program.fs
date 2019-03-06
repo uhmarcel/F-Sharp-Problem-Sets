@@ -13,13 +13,11 @@ type Coordinates<'a> =
     | Threeple of 'a * 'a * 'a
     | Fourple of 'a * 'a * 'a * 'a
 
-    
 // b) Instantiate a Tuple of integers, a Threeple of floats and a Fourple of strings.
 
 let A = Tuple (2, 6)
 let B = Threeple (1.3, 4.2, 6.3)
 let C = Fourple ("and", "or", "not", "xor")
-
 
 // c) Create a function that has a parameter of a binary function and Coordinate. 
 //    Apply the function to the Coordinate like List.reduce.
@@ -30,7 +28,6 @@ let rec coordinateReduce f = function
     | Fourple (r,s,t,v) -> Threeple (f r s, t, v) |> coordinateReduce f
 
 
-
 let ProblemOne =  
     printfn "Problem 1\n"
     printfn "Tuple A = %A" A
@@ -38,65 +35,70 @@ let ProblemOne =
     printfn "Fourple C = %A\n" C
     
     // d) Call the function with (+) for each of the Coordinates in part (b).
-
     printfn "coordinateReduce (+) A = %A" <|coordinateReduce (+) A
     printfn "coordinateReduce (+) B = %A" <|coordinateReduce (+) B
     printfn "coordinateReduce (+) C = %A\n" <|coordinateReduce (+) C
 
     // e) Call the function with (-) for the numeric Coordinates in part (b). 
-
     printfn "coordinateReduce (-) A = %A" <| coordinateReduce (-) A
     printfn "coordinateReduce (-) B = %A" <| coordinateReduce (-) B
+    0
 
 
 // P2 - Creating a Syntax Parser
+
 type TERMINAL = IF|THEN|ELSE|BEGIN|END|PRINT|SEMICOLON|ID|EOF
 
+let eat (T: TERMINAL) = function
+    | [] -> failwith "Incompleted syntax, program ended early"
+    | t::ts when t = T -> ts
+    | t::_ -> failwithf "Expected %A, but %A was found instead" T t
+
+let rec S = function 
+    | [] -> failwith "Incompleted syntax, program ended early"
+    | t::ts -> 
+        match t with
+            | IF -> ts |> eat ID |> eat THEN |> S |> eat ELSE |> S
+            | BEGIN -> ts |> S |> L 
+            | PRINT -> ts |> eat ID
+            | _ -> failwithf "Expected IF, BEGIN or PRINT. Found %A instead" t
+    
+and L = function
+    | [] -> failwith "Incompleted syntax, program ended early"
+    | t::ts ->
+        match t with
+            | END -> ts 
+            | SEMICOLON -> ts |> S |> L
+            | _ ->  failwithf "Expected END or SEMICOLON. Found %A instead" t
+
+let accept = printfn "Program accepted"
+let error =  printfn "Syntax error" 
+
+let parseProgram p =
+    let parsed = p |> S
+    match parsed with
+        | [] -> failwith "Missing EOF or terminated early"
+        | t::_ -> if t = EOF then accept else error
+    
+
+// Testing different program syntaxes
+
 let ProblemTwo =
-    
-    let eat (T: TERMINAL) = function
-        | [] -> failwith "Incompleted syntax, program ended early"
-        | t::ts when t = T -> ts
-        | t::_ -> failwithf "Expected %A, but %A was found instead" T t
 
-    let rec S = function 
-        | [] -> failwith "Incompleted syntax, program ended early"
-        | t::ts -> 
-            match t with
-                | IF -> ts |> eat ID |> eat THEN |> S |> eat ELSE |> S
-                | BEGIN -> ts |> S |> L 
-                | PRINT -> ts |> eat ID
-                | _ -> failwithf "Expected IF, BEGIN or PRINT. Found %A instead" t
-    
-    and L = function
-        | [] -> failwith "Incompleted syntax, program ended early"
-        | t::ts ->
-            match t with
-                | END -> ts 
-                | SEMICOLON -> ts |> S |> L
-                | _ ->  failwithf "Expected END or SEMICOLON. Found %A instead" t
+    let Program_A = [IF;ID;THEN;BEGIN;PRINT;ID;SEMICOLON;PRINT;ID;END;ELSE;PRINT;ID;EOF]
+    let Program_B = [IF;ID;THEN;IF;ID;THEN;PRINT;ID;ELSE;PRINT;ID;ELSE;BEGIN;PRINT;ID;END;EOF]
+    let Program_C = [IF;ID;THEN;BEGIN;PRINT;ID;SEMICOLON;PRINT;ID;SEMICOLON;END;ELSE;PRINT;ID;EOF]
 
-    let accept = printfn "Program accepted"
-    let error =  printfn "Syntax error" 
+    printfn "Problem 2\n"
 
-    let parseProgram p =
-        let parsed = p |> S
-        match parsed with
-            | [] -> failwith "Missing EOF or terminated early"
-            | t::_ -> if t = EOF then accept else error
-    
-    printfn "Testing Syntax parse"
-           
-     
-       
-            
-    
-    
-
-
-
-// WIP
-
+    printfn "Program A: %A" Program_A
+    parseProgram Program_A
+    printfn "Program B: %A" Program_B
+    parseProgram Program_B
+    printfn "Program C: %A" Program_C
+    //parseProgram Program_C
+    0
+ 
 
 // P3 - Implement a parser using...
 // WIP
@@ -116,13 +118,15 @@ let ProblemFour =
     
     printfn "val curry : f:('a * 'b -> 'c) -> a:'a -> b:'b -> 'c"
     printfn "val uncurry : f:('a -> 'b -> 'c) -> a:'a * b:'b -> 'c"
-
+    0
 
 
 
 [<EntryPoint>]
 let main argv =
     ProblemOne
+    ProblemTwo
+    ProblemFour
     Console.ReadKey() |> ignore
     0
     
