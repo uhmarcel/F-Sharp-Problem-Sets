@@ -1,5 +1,6 @@
 ﻿
 open System
+open System.Runtime.Serialization
 
 
 // P1 - Discriminated Unions
@@ -29,6 +30,7 @@ let rec coordinateReduce f = function
 
 
 let ProblemOne =  
+
     printfn "Problem 1\n"
     printfn "Tuple A = %A" A
     printfn "Threeple B = %A" B
@@ -48,40 +50,38 @@ let ProblemOne =
 
 // P2 - Creating a Syntax Parser
 
-type TERMINAL = IF|THEN|ELSE|BEGIN|END|PRINT|SEMICOLON|ID|EOF
-
-let eat (T: TERMINAL) = function
-    | [] -> failwith "Incompleted syntax, program ended early"
-    | t::ts when t = T -> ts
-    | t::_ -> failwithf "Expected %A, but %A was found instead" T t
-
-let rec S = function 
-    | [] -> failwith "Incompleted syntax, program ended early"
-    | IF::ts -> ts |> eat ID |> eat THEN |> S |> eat ELSE |> S
-    | BEGIN::ts -> ts |> S |> L 
-    | PRINT::ts -> ts |> eat ID
-    | t::_ -> failwithf "Expected IF, BEGIN or PRINT. Found %A instead" t
-
-    
-and L = function
-    | [] -> failwith "Incompleted syntax, program ended early"
-    | END::ts -> ts 
-    | SEMICOLON::ts -> ts |> S |> L
-    | t::_ ->  failwithf "Expected END or SEMICOLON. Found %A instead" t
-
-let parseProgram p =
-    let parsed = p |> S       
-    match parsed with
-        | [] -> failwith "Missing EOF or terminated early"
-        | EOF::[] -> printfn "Program Accepted"
-        | EOF::_ -> failwith "EOF not at the end of the program"
-        | t::_ -> failwithf "Expected EOF, found %A instead" t
-    
-
-// Testing different program syntaxes
+type TERMINAL = IF|THEN|ELSE|BEGIN|END|PRINT|SEMICOLON|ID|EOF|ADD|SUB|MUL|LPAREN|RPAREN
 
 let ProblemTwo =
 
+    let eat (T: TERMINAL) = function
+        | [] -> failwith "Incompleted syntax, program ended early"
+        | t::ts when t = T -> ts
+        | t::_ -> failwithf "Expected %A, but %A was found instead" T t
+
+    let rec S = function 
+        | [] -> failwith "Incompleted syntax, program ended early"
+        | IF::ts -> ts |> eat ID |> eat THEN |> S |> eat ELSE |> S
+        | BEGIN::ts -> ts |> S |> L 
+        | PRINT::ts -> ts |> eat ID
+        | t::_ -> failwithf "Expected IF, BEGIN or PRINT. Found %A instead" t
+
+    
+    and L = function
+        | [] -> failwith "Incompleted syntax, program ended early"
+        | END::ts -> ts 
+        | SEMICOLON::ts -> ts |> S |> L
+        | t::_ ->  failwithf "Expected END or SEMICOLON. Found %A instead" t
+
+    let parseProgram p =
+        let parsed = p |> S       
+        match parsed with
+            | [] -> failwith "Missing EOF or terminated early"
+            | EOF::[] -> printfn "Program Accepted"
+            | EOF::_ -> failwith "EOF not at the end of the program"
+            | t::_ -> failwithf "Expected EOF, found %A instead" t
+
+    
     let Program_A = [IF;ID;THEN;BEGIN;PRINT;ID;SEMICOLON;PRINT;ID;END;ELSE;PRINT;ID;EOF]
     let Program_B = [IF;ID;THEN;IF;ID;THEN;PRINT;ID;ELSE;PRINT;ID;ELSE;BEGIN;PRINT;ID;END;EOF]
     let Program_C = [IF;ID;THEN;BEGIN;PRINT;ID;SEMICOLON;PRINT;ID;SEMICOLON;END;ELSE;PRINT;ID;EOF]
@@ -107,13 +107,22 @@ let ProblemTwo =
  
 
 // P3 - Implement a parser using...
+
+//let ProblemThree =
+    
+//    let rec E = function
+//        | [] -> "Incompleted syntax, program ended early"
+//        | 
+    
 // WIP
+
 
 
 // P4 - Define an F# function curry f that converts an uncurried function to a 
 // curried function, and an F# function uncurry f that does the opposite conversion. 
 
 let ProblemFour =
+
     let curry f a b = f (a,b)
     let uncurry f (a,b) = f a b
     
@@ -124,15 +133,46 @@ let ProblemFour =
     
     printfn "val curry : f:('a * 'b -> 'c) -> a:'a -> b:'b -> 'c"
     printfn "val uncurry : f:('a -> 'b -> 'c) -> a:'a * b:'b -> 'c"
+
+    printfn "\n"
+    0
+
+
+let ProblemFive =
+    
+    let rec inner us vs = 
+        match us, vs with
+            | [], [] -> 0I
+            | [], _ | _, [] -> failwith "Lists are not the same size"
+            | u::us, v::vs -> u*v + inner us vs
+     
+    let inner_tail us vs =
+        let rec inner_aux xs ys acc = 
+            match xs, ys with
+                | [], [] -> acc
+                | [], _ | _, [] -> failwith "Lists are not the same size"
+                | x::xs, y::ys -> inner_aux xs ys (acc + x*y)
+        inner_aux us vs 0I
+        
+    printfn "Problem 5\n"
+
+    printfn "Inner function result -> Stack overflow" // <| inner [1I..50000I][50001I..100000I] -> Stack overflow!
+    printfn "Inner_tail function result -> %A" <| inner_tail [1I..50000I][50001I..100000I]
+    
+    printfn "\n"
     0
 
 
 
 [<EntryPoint>]
 let main argv =
-    ProblemOne
-    ProblemTwo
-    ProblemFour
+    
+    ProblemOne |> ignore
+    ProblemTwo |> ignore
+    //ProblemThree |> ignore
+    ProblemFour |> ignore
+    ProblemFive |> ignore
+    
     Console.ReadKey() |> ignore
     0
     
