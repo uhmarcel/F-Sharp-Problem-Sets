@@ -37,11 +37,12 @@ let ProblemOne =
     // d) Call the function with (+) for each of the Coordinates in part (b).
     printfn "coordinateReduce (+) A = %A" <|coordinateReduce (+) A
     printfn "coordinateReduce (+) B = %A" <|coordinateReduce (+) B
-    printfn "coordinateReduce (+) C = %A\n" <|coordinateReduce (+) C
+    printfn "coordinateReduce (+) C = %A" <|coordinateReduce (+) C
 
     // e) Call the function with (-) for the numeric Coordinates in part (b). 
     printfn "coordinateReduce (-) A = %A" <| coordinateReduce (-) A
     printfn "coordinateReduce (-) B = %A" <| coordinateReduce (-) B
+    printfn "\n"
     0
 
 
@@ -68,14 +69,13 @@ and L = function
     | SEMICOLON::ts -> ts |> S |> L
     | t::_ ->  failwithf "Expected END or SEMICOLON. Found %A instead" t
 
-let accept = printfn "Program accepted"
-let error =  printfn "Syntax error" 
-
-let parseProgram p = 
-    let parsed = p |> S
+let parseProgram p =
+    let parsed = p |> S       
     match parsed with
         | [] -> failwith "Missing EOF or terminated early"
-        | t::_ -> if t = EOF then accept else error
+        | EOF::[] -> printfn "Program Accepted"
+        | EOF::_ -> failwith "EOF not at the end of the program"
+        | t::_ -> failwithf "Expected EOF, found %A instead" t
     
 
 // Testing different program syntaxes
@@ -89,11 +89,20 @@ let ProblemTwo =
     printfn "Problem 2\n"
 
     printfn "Program A: %A" Program_A
-    parseProgram Program_A
     printfn "Program B: %A" Program_B
-    parseProgram Program_B
-    printfn "Program C: %A" Program_C
-    //parseProgram Program_C
+    printfn "Program C: %A\n" Program_C
+
+    
+    printf "Program A -> " 
+    try parseProgram Program_A with | Failure(e) -> printfn "Syntax error: %s" e 
+    
+    printf "Program B -> " 
+    try parseProgram Program_B with | Failure(e) -> printfn "Syntax error: %s" e 
+    
+    printf "Program C -> " 
+    try parseProgram Program_C with | Failure(e) -> printfn "Syntax error: %s" e 
+    
+    printfn "\n"
     0
  
 
