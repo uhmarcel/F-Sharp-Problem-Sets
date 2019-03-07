@@ -56,25 +56,22 @@ let eat (T: TERMINAL) = function
 
 let rec S = function 
     | [] -> failwith "Incompleted syntax, program ended early"
-    | t::ts -> 
-        match t with
-            | IF -> ts |> eat ID |> eat THEN |> S |> eat ELSE |> S
-            | BEGIN -> ts |> S |> L 
-            | PRINT -> ts |> eat ID
-            | _ -> failwithf "Expected IF, BEGIN or PRINT. Found %A instead" t
+    | IF::ts -> ts |> eat ID |> eat THEN |> S |> eat ELSE |> S
+    | BEGIN::ts -> ts |> S |> L 
+    | PRINT::ts -> ts |> eat ID
+    | t::_ -> failwithf "Expected IF, BEGIN or PRINT. Found %A instead" t
+
     
 and L = function
     | [] -> failwith "Incompleted syntax, program ended early"
-    | t::ts ->
-        match t with
-            | END -> ts 
-            | SEMICOLON -> ts |> S |> L
-            | _ ->  failwithf "Expected END or SEMICOLON. Found %A instead" t
+    | END::ts -> ts 
+    | SEMICOLON::ts -> ts |> S |> L
+    | t::_ ->  failwithf "Expected END or SEMICOLON. Found %A instead" t
 
 let accept = printfn "Program accepted"
 let error =  printfn "Syntax error" 
 
-let parseProgram p =
+let parseProgram p = 
     let parsed = p |> S
     match parsed with
         | [] -> failwith "Missing EOF or terminated early"
