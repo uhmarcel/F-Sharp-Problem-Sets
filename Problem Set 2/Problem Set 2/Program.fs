@@ -138,6 +138,10 @@ let ProblemFour =
     0
 
 
+// P5 - Given vectors u = (u1, u2,..., un) and v = (v1, v2,..., vn), the inner product
+// of u and v is defined to be u1*v1 + u2*v2 + ... + u n*vn. Write a curried F# function
+// inner that takes two vectors represented as int list and returns their inner product.
+
 let ProblemFive =
     
     let rec inner us vs = 
@@ -161,7 +165,26 @@ let ProblemFive =
     
     printfn "\n"
     0
+    
 
+// P6 - Given an m-by-n matrix A and an n-by-p matrix B, the product of A and B is an
+// m-by-p matrix whose entry in position (i,j) is the inner product of row i of A with 
+// column j of B.
+
+let problem 6 = 
+    
+    let rec transpose = function
+        | [] -> []
+        | xs     -> List.map (fun x -> List.head x) xs :: transpose (List.map (fun x -> List.tail x) xs)
+
+    let rec innerProduct xs ys = 
+        match xs, ys with 
+            | [], [] -> 0
+            | _, [] | [], _ -> failwith "Lists must have same size"
+            | x::xs, y::ys -> x * y + innerProduct xs ys 
+    
+
+    0
 
 
 [<EntryPoint>]
