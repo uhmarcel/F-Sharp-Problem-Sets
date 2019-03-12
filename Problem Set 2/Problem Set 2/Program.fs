@@ -131,8 +131,9 @@ let rec lastElement = function
     | x :: [] -> Some x
     | _ :: xs -> lastElement xs
 
-
-
+let optionEvaluate = function
+    | None -> "Invalid input"
+    | Some n -> sprintf "%A" n
 
 
 // P10 - write an F# program to evaluate arithmetic expressions written in the language 
@@ -245,6 +246,20 @@ let main argv =
     printfn "Matrix A: %A" Matrix_A
     printfn "Matrix B: %A" Matrix_B
     printfn "Matrix A * Matrix B = %A" <| matrixProduct Matrix_A Matrix_B    
+
+    printfn "\n"
+
+//  -------------------
+
+    printfn "Problem 9\n"
+    
+    let A = []
+    let B = ["cat"]
+    let C = [1..5]
+
+    printfn "The last element of %A is %A" A (lastElement A |> optionEvaluate)
+    printfn "The last element of %A is %A" B (lastElement B |> optionEvaluate)
+    printfn "The last element of %A is %A" C (lastElement C |> optionEvaluate)
 
     printfn "\n"
 
