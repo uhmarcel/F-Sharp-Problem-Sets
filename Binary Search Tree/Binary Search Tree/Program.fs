@@ -26,6 +26,15 @@ let rec insert e = function
     | Br (n, t1, t2) -> if e < n then Br (n, insert e t1, t2)
                         else Br (n, t1, insert e t2)
 
+let isBST_aux n flag = function
+    | Br (m, _, _) when flag = 0 -> m < n
+    | Br (m, _, _) when flag = 1 -> m >= n
+    | Lf -> true
+
+let rec isBST = function
+    | Lf -> true
+    | Br (n, t1, t2) -> if isBST_aux n 0 t1 && isBST_aux n 1 t2 then isBST t1 && isBST t2
+                        else false             
 
 [<EntryPoint>]
 let main argv =
@@ -46,7 +55,11 @@ let main argv =
 
     printfn "insert 8 B = %A" <| insert 8 B 
     printfn "insert 2 B = %A" <| insert 2 B
-    printfn "B |> insert 7 |> insert 12 = %A" <| (B |> insert 7 |> insert 12)
+    printfn "B |> insert 7 |> insert 12 = %A\n" <| (B |> insert 7 |> insert 12)
+
+    printfn "isBST A = %A" <| isBST A
+    printfn "isBST B = %A" <| isBST B
+    printfn "isBST Br(5, Br(6,Lf,Lf), Lf) = %A" <| isBST (Br(5, Br(6,Lf,Lf), Lf))
 
 
 
