@@ -36,16 +36,22 @@ let rec isBST = function
     | Br (n, t1, t2) -> if isBST_aux n 0 t1 && isBST_aux n 1 t2 then isBST t1 && isBST t2
                         else false             
 
+let rec treeMap f = function
+    | Lf -> Lf
+    | Br (n, t1, t2) -> Br (f n, treeMap f t1, treeMap f t2)
+
 [<EntryPoint>]
 let main argv =
 
     printfn "Binary Search Trees \n"
 
-    let A = Br(9, Br(7, Br(2, Lf, Br(3, Lf, Lf)), Br(8, Lf, Lf)), Br(12, Br(11, Lf, Lf), Br(16, Lf, Lf)))
-    let B = Br(6, Lf, Lf)
+    let A = Br(9, Br(7, Br(2, Lf, Br(3,Lf,Lf)), Br(8,Lf,Lf)), Br(12, Br(11,Lf,Lf), Br(16,Lf,Lf)))
+    let B = Br(4, Br(2,Lf,Lf), Br(6,Lf,Lf))
+    let C = Br(6,Lf,Lf)
 
     printfn "Tree A: \n %A \n" A
     printfn "Tree B: \n %A \n" B
+    printfn "Tree C: \n %A \n\n" C
 
     printfn "minimum A = %A" <| minimum A
     printfn "maximum A = %A\n" <| maximum A
@@ -53,13 +59,18 @@ let main argv =
     printfn "find 11 A = %A" <| find 11 A
     printfn "find 11 B = %A\n" <| find 11 B
 
-    printfn "insert 8 B = %A" <| insert 8 B 
-    printfn "insert 2 B = %A" <| insert 2 B
-    printfn "B |> insert 7 |> insert 12 = %A\n" <| (B |> insert 7 |> insert 12)
+    printfn "insert 8 C = %A" <| insert 8 C 
+    printfn "insert 2 C = %A" <| insert 2 C
+    printfn "C |> insert 7 |> insert 12 = %A\n" <| (C |> insert 7 |> insert 12)
 
     printfn "isBST A = %A" <| isBST A
     printfn "isBST B = %A" <| isBST B
-    printfn "isBST Br(5, Br(6,Lf,Lf), Lf) = %A" <| isBST (Br(5, Br(6,Lf,Lf), Lf))
+    printfn "isBST Br(5, Br(6,Lf,Lf), Lf) = %A\n" <| isBST (Br(5, Br(6,Lf,Lf), Lf))
+
+    printfn "treeMap (fun x -> x*2) B = %A" <| treeMap (fun x -> x*2) B
+ 
+
+
 
 
 
