@@ -5,11 +5,21 @@ type 'a Tree =
     | Br of 'a * 'a Tree * 'a Tree
     | Lf
 
-let rec getMinimum = function
+let rec minimum = function
     | Br (n, Lf, _) -> n
-    | Br (_, t1, _) -> getMinimum t1
+    | Br (_, t1, _) -> minimum t1
     | Lf -> failwith "Tree has no elements"
 
+let rec maximum = function
+    | Br (n, _, Lf) -> n
+    | Br (_, _, t2) -> maximum t2
+    | Lf -> failwith "Tree has no elements"
+
+let rec find e = function
+    | Lf -> false
+    | Br (n, t1, t2) -> if e = n then true
+                        elif e < n then find e t1
+                        else find e t2
 
 
 [<EntryPoint>]
@@ -22,8 +32,10 @@ let main argv =
     printfn "Tree A:"
     printfn "%A \n" A
 
-    printfn "getMinimum A = %A" <| getMinimum A
-    
+    printfn "minimum A = %A" <| minimum A
+    printfn "maximum A = %A" <| maximum A
+    printfn "find 11 A = %A" <| find 11 A
+    printfn "find 6 A = %A" <| find 6 A
 
 
 
