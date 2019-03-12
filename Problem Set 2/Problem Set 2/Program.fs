@@ -231,12 +231,30 @@ let main argv =
     let Matrix_B = [[0;1];[3;2];[1;2]]
         
     printfn "Matrix A: %A" Matrix_A
-    printfn "Matrix B: %A \n" Matrix_B
-    printfn "Matrix A * Matrix B = %A \n" <| matrixProduct Matrix_A Matrix_B    
+    printfn "Matrix B: %A" Matrix_B
+    printfn "Matrix A * Matrix B = %A" <| matrixProduct Matrix_A Matrix_B    
 
     printfn "\n"
 
 //  -------------------
+
+    printfn "Problem 10\n"
+    
+    let Expression_A = Prod(Num 3, Diff(Num 5, Num 1))
+    let Expression_B = Diff(Num 3, Quot(Num 5, Prod(Num 7, Num 0)))
+    let Expression_C = Prod(Sum(Num 5, Neg (Num 2)), Quot(Diff(Prod(Num 6, Num 3), Num 5), Num 2))
+
+    printfn "Expression A: %A" Expression_A
+    printfn "evaluate(Expression A) = %A" <| evaluate Expression_A
+    printfn "Expression B: %A" Expression_B
+    printfn "evaluate(Expression B) = %A" <| evaluate Expression_B
+    printfn "Expression C: %A" Expression_C
+    printfn "evaluate(Expression C) -> %A" <| evaluate Expression_C
+
+    printfn "\nNote: None = %A" None
+    printfn "(Expression B returned None as it has a division by 0)"
+   
+    printfn "\n"
 
     Console.ReadKey() |> ignore
     0
