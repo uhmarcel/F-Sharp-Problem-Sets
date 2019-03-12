@@ -121,9 +121,31 @@ let matrixProduct A B =
         | x::xs -> List.map (innerProduct x) ys :: product_aux ys xs    
     let B = transpose B
     product_aux B A
+
+
+// P10 - write an F# program to evaluate arithmetic expressions written in the language 
+// given by the following context-free grammar:
+// E -> n | -E | E + E | E - E | E * E | E / E | (E)
+
+type Exp =
+    | Num of int
+    | Neg of Exp
+    | Sum of Exp * Exp
+    | Diff of Exp * Exp
+    | Prod of Exp * Exp
+    | Quot of Exp * Exp    
+  
+let rec evaluate = function
+    | Num n -> Some n
+    | Neg e -> 
+        match evaluate e with
+            | Some n -> Some (-n)
+            | _ -> None
+    | Sum (e1, e2) -> 
+        match evaluate e1, evaluate e2 with
+            | Some n1, Some n2 -> Some (n1 + n2)
+            | _ -> None
     
-    
-// Testing - Output for the problems
 
 [<EntryPoint>]
 let main argv =
