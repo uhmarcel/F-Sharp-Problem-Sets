@@ -40,13 +40,23 @@ let rec treeMap f = function
     | Lf -> Lf
     | Br (n, t1, t2) -> Br (f n, treeMap f t1, treeMap f t2)
 
+let rec colapseLeft f n = function    
+    | Lf -> Lf 
+    | Br(m, Lf, Lf) -> Br(f n m, Lf, Lf)
+    | Br(m, t1, Lf) -> colapseLeft f (f n m) t1 
+    | Br(m, Lf, t2) -> colapseRight f (f n m) t2
+    | Br(m, t1, t2) -> match (colapseLeft f (f n m) t1) with
+                        | Br (y, _, _) -> colapseRight f (f y  t2 
+
+
 let treeColapse f = function
-    | Br(n, t1, Lf) -> colapseLeft n t1
-    | Br(n, Lf, t2) -> colapseRight Lf
-    let rec colapseLeft = function 
-        | Lf -> Lf
-        | Br (n, t1, t2) -> match t1 with
-                              | Br (x, r1, r2) -> Br (f n x, r1) 
+    | Lf -> Lf
+    | Br(n, Lf, Lf) -> Br(n, Lf, Lf) 
+    | Br(n, t1, Lf) -> colapseLeft f n t1
+    | Br(n, Lf, t2) -> colapseRight f n t2
+    | Br(n, t1, t2) -> match (colapseLeft f n t1) with
+                        | Br (m, _, _) -> colapseRight f m t2 
+                
 
 
 [<EntryPoint>]
