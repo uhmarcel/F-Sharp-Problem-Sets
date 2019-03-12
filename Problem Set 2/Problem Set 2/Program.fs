@@ -145,6 +145,20 @@ let rec evaluate = function
         match evaluate e1, evaluate e2 with
             | Some n1, Some n2 -> Some (n1 + n2)
             | _ -> None
+    | Diff (e1, e2) -> 
+        match evaluate e1, evaluate e2 with
+            | Some n1, Some n2 -> Some (n1 - n2)
+            | _ -> None
+    | Prod (e1, e2) -> 
+        match evaluate e1, evaluate e2 with
+            | Some n1, Some n2 -> Some (n1 * n2)
+            | _ -> None
+    | Quot (e1, e2) -> 
+        match evaluate e1, evaluate e2 with
+            | Some _, Some 0 -> None 
+            | Some n1, Some n2 -> Some (n1 / n2)
+            | _ -> None
+    
     
 
 [<EntryPoint>]
