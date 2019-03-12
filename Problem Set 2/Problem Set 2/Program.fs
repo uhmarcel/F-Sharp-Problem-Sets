@@ -172,6 +172,15 @@ let rec evaluate = function
             | Some n1, Some n2 -> Some (n1 / n2)
             | _ -> None
     
+
+// P11 - Create a record type for Name, Credits and GPA.
+// Create a record instance with the values "Jones", 109, 3.85.
+
+type Student = {Name: string; Credits: int; GPA: float}
+
+let S1 = {Name = "Jones"; Credits = 109; GPA = 3.85}
+let S2 = {Name = "George"; Credits = 60; GPA = 3.15}
+let S3 = {Name = "Steve"; Credits = 121; GPA = 2.25}
     
 
 [<EntryPoint>]
@@ -283,6 +292,17 @@ let main argv =
    
     printfn "\n"
 
+    //  -------------------
+
+    printfn "Problem 11\n"
+    
+    printfn "Student 1 -> %A" S1
+    printfn "Student 2 -> %A" S2
+    printfn "Student 3 -> %A" S3
+    
+    printfn "\n"
+
+//  -------------------
     Console.ReadKey() |> ignore
     0
     
