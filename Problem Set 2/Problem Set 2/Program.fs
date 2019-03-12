@@ -123,6 +123,18 @@ let matrixProduct A B =
     product_aux B A
 
 
+// P9 - Write a recursive function that returns the last element in its list parameter, 
+// using the option type to handle invalid input.
+
+let rec lastElement = function
+    | [] -> None
+    | x :: [] -> Some x
+    | _ :: xs -> lastElement xs
+
+
+
+
+
 // P10 - write an F# program to evaluate arithmetic expressions written in the language 
 // given by the following context-free grammar:
 // E -> n | -E | E + E | E - E | E * E | E / E | (E)
