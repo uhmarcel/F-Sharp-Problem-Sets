@@ -40,6 +40,15 @@ let rec treeMap f = function
     | Lf -> Lf
     | Br (n, t1, t2) -> Br (f n, treeMap f t1, treeMap f t2)
 
+let treeColapse f = function
+    | Br(n, t1, Lf) -> colapseLeft n t1
+    | Br(n, Lf, t2) -> colapseRight Lf
+    let rec colapseLeft = function 
+        | Lf -> Lf
+        | Br (n, t1, t2) -> match t1 with
+                              | Br (x, r1, r2) -> Br (f n x, r1) 
+
+
 [<EntryPoint>]
 let main argv =
 
@@ -69,7 +78,7 @@ let main argv =
 
     printfn "treeMap (fun x -> x*2) B = %A" <| treeMap (fun x -> x*2) B
  
-
+    printfn "\n%A" <| treeColapse (fun x y -> x+y) A
 
 
 
