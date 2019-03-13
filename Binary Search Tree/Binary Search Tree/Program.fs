@@ -40,8 +40,6 @@ let rec treeMap f = function
     | Lf -> Lf
     | Br (n, t1, t2) -> Br (f n, treeMap f t1, treeMap f t2)
 
-
-
 let treeColapse f tree = 
     let rec colapse_aux f n = function    
         | Lf -> Br(n, Lf, Lf)
@@ -64,6 +62,9 @@ let treeColapse f tree =
         | Lf -> failwith "Impossible combination"
     colapse_start f tree |> getNode
 
+let rec treeToList = function
+    | Lf -> []
+    | Br(n, t1, t2) -> n :: (treeToList t1 @ treeToList t2)
 
 [<EntryPoint>]
 let main argv =
@@ -95,13 +96,12 @@ let main argv =
     printfn "treeMap (fun x -> x*2) B = %A\n" <| treeMap (fun x -> x*2) B
  
     printfn "treeColapse (+) A = %A" <| treeColapse (+) A
+    printfn "treeColapse (-) A = %A" <| treeColapse (-) A
+    printfn "treeColapse (*) A = %A\n" <| treeColapse (*) A
 
-
-
-
-
-
-
+    printfn "treeToList A = %A" <| treeToList A
+    printfn "treeToList B = %A" <| treeToList B
+    printfn "treeToList (Lf) = %A" <| treeToList Lf
     
     Console.ReadKey() |> ignore
     0 // Return exit code
