@@ -40,31 +40,29 @@ let rec treeMap f = function
     | Lf -> Lf
     | Br (n, t1, t2) -> Br (f n, treeMap f t1, treeMap f t2)
 
-let rec colapseLeft f n = function    
-    | Lf -> Br(n, Lf, Lf)
-    | Br(m, Lf, Lf) -> Br(f n m, Lf, Lf)
-    | Br(m, t1, Lf) -> colapseLeft f (f n m) t1 
-    | Br(m, Lf, t2) -> colapseRight f (f n m) t2
-    | Br(m, t1, t2) -> match (colapseLeft f (f n m) t1) with
-                        | Br (y, _, _) -> colapseRight f y t2
-                        | _ -> failwith "How did I get here?"
-and colapseRight f n = function
-    | Lf -> Br(n, Lf, Lf)
-    | Br(m, Lf, Lf) -> Br(f n m, Lf, Lf)
-    | Br(m, t1, Lf) -> colapseLeft f (f n m) t1 
-    | Br(m, Lf, t2) -> colapseRight f (f n m) t2
-    | Br(m, t1, t2) -> match (colapseLeft f (f n m) t1) with
-                        | Br (y, _, _) -> colapseRight f y t2
-                        | _ -> failwith "How did I get here?"
 
-let treeColapse f = function
-    | Lf -> Lf
-    | Br(m, Lf, Lf) -> Br(m, Lf, Lf)
-    | Br(m, t1, Lf) -> colapseLeft f m t1 
-    | Br(m, Lf, t2) -> colapseRight f m t2
-    | Br(m, t1, t2) -> match (colapseLeft f m t1) with
-                        | Br (y, _, _) -> colapseRight f y t2
-                        | _ -> failwith "How did I get here?"
+
+let treeColapse f tree = 
+    let rec colapse_aux f n = function    
+        | Lf -> Br(n, Lf, Lf)
+        | Br(m, Lf, Lf) -> Br(f n m, Lf, Lf)
+        | Br(m, t1, Lf) -> colapse_aux f (f n m) t1 
+        | Br(m, Lf, t2) -> colapse_aux f (f n m) t2
+        | Br(m, t1, t2) -> match (colapse_aux f (f n m) t1) with
+                            | Br (y, _, _) -> colapse_aux f y t2
+                            | _ -> failwith "Impossible combination"
+    let colapse_start f = function
+        | Lf -> failwith "The tree is empty"
+        | Br(m, Lf, Lf) -> Br(m, Lf, Lf)
+        | Br(m, t1, Lf) -> colapse_aux f m t1
+        | Br(m, Lf, t2) -> colapse_aux f m t2
+        | Br(m, t1, t2) -> match (colapse_aux f m t1) with
+                            | Br (y, _, _) -> colapse_aux f y t2
+                            | _ -> failwith "Impossible combination"
+    let getNode = function
+        | Br(n, _, _) -> n
+        | Lf -> failwith "Impossible combination"
+    colapse_start f tree |> getNode
 
 
 [<EntryPoint>]
@@ -94,9 +92,9 @@ let main argv =
     printfn "isBST B = %A" <| isBST B
     printfn "isBST Br(5, Br(6,Lf,Lf), Lf) = %A\n" <| isBST (Br(5, Br(6,Lf,Lf), Lf))
 
-    printfn "treeMap (fun x -> x*2) B = %A" <| treeMap (fun x -> x*2) B
+    printfn "treeMap (fun x -> x*2) B = %A\n" <| treeMap (fun x -> x*2) B
  
-    printfn "\n%A" <| treeColapse (fun x y -> x+y) A
+    printfn "treeColapse (+) A = %A" <| treeColapse (+) A
 
 
 
