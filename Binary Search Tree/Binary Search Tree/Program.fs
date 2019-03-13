@@ -62,9 +62,18 @@ let treeColapse f tree =
         | Lf -> failwith "Impossible combination"
     colapse_start f tree |> getNode
 
-let rec treeToList = function
+let rec treeToList_preorder = function
     | Lf -> []
-    | Br(n, t1, t2) -> n :: (treeToList t1 @ treeToList t2)
+    | Br(n, t1, t2) -> n :: (treeToList_preorder t1 @ treeToList_preorder t2)
+
+let rec treeToList_postorder = function
+    | Lf -> []
+    | Br(n, t1, t2) -> treeToList_postorder t1 @ treeToList_postorder t2 @ [n] // horrible inneficient
+
+let rec treeToList_inorder = function
+    | Lf -> []
+    | Br(n, t1, t2) -> treeToList_inorder t1 @ (n :: treeToList_inorder t2)
+
 
 [<EntryPoint>]
 let main argv =
@@ -99,9 +108,9 @@ let main argv =
     printfn "treeColapse (-) A = %A" <| treeColapse (-) A
     printfn "treeColapse (*) A = %A\n" <| treeColapse (*) A
 
-    printfn "treeToList A = %A" <| treeToList A
-    printfn "treeToList B = %A" <| treeToList B
-    printfn "treeToList (Lf) = %A" <| treeToList Lf
+    printfn "treeToList_preorder A = %A" <| treeToList_preorder A
+    printfn "treeToList_postorder A = %A" <| treeToList_postorder A
+    printfn "treeToList_inorder A = %A" <| treeToList_inorder A
     
     Console.ReadKey() |> ignore
     0 // Return exit code
