@@ -77,7 +77,7 @@ let rec treeToList_inorder = function
 
 let rec remove e = function
     | Lf -> Lf                              // If element is not found, ignore (return leaf)
-    | Br(n, Lf, Lf) when e = n -> Lf        // If element to remove has no child, remove (return leaf)
+    | Br(n, t1, Lf) when e = n -> t1        // If element to remove has no right, replace with left child
     | Br(n,t1,t2) -> 
         if e < n then Br(n, remove e t1, t2)     // If element is smaller than current, search to remove in the left tree
         elif e > n then Br(n, t1, remove e t2)   // If element is greater than current, search to remove in the right tree
@@ -127,7 +127,7 @@ let main argv =
     printfn "B = %A \n" B
     printfn "remove 6 B = %A" <| remove 6 B
     printfn "remove 4 B = %A" <| remove 4 B
-    printfn "B |> remove 4 |> remove 6 = %A" <| (B |> remove 4 |> remove 6) // bug, minimum has no elements?
+    printfn "B |> remove 4 |> remove 6 = %A" <| (B |> remove 4 |> remove 6)
     
     Console.ReadKey() |> ignore
     0 // Return exit code
