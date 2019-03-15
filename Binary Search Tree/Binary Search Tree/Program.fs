@@ -75,13 +75,16 @@ let rec treeToList_inorder = function
     | Br(n, t1, t2) -> treeToList_inorder t1 @ (n :: treeToList_inorder t2)
 
 
-let remove e = 
-    let rec remove_find e = function
-        | Lf -> Lf
-        | Br(n, t1, t2) when n = e ->  remove_find
-        | Br(n,t1,t2) -> if e < n then Br(n, remove_find t1, t2)
-                         else Br(n, t1, remove_find t2) 
-                        
+let rec remove e = function
+    | Lf -> Lf                              // If element is not found, ignore (return leaf)
+    | Br(n, Lf, Lf) when e = n -> Lf        // If element to remove has no child, remove (return leaf)
+    | Br(n,t1,t2) -> 
+        if e < n then Br(n, remove e t1, t2)     // If element is smaller than current, search to remove in the left tree
+        elif e > n then Br(n, t1, remove e t2)   // If element is greater than current, search to remove in the right tree
+        else                                     // If element is equal to current, find minimum of the right tree, put it as        
+            let m = minimum t2                   // the value on this current branch, and remove the minimum
+            Br(m, t1, remove m t2)
+          
      
 
 [<EntryPoint>]
@@ -119,9 +122,12 @@ let main argv =
 
     printfn "treeToList_preorder A = %A" <| treeToList_preorder A
     printfn "treeToList_postorder A = %A" <| treeToList_postorder A
-    printfn "treeToList_inorder A = %A" <| treeToList_inorder A
+    printfn "treeToList_inorder A = %A \n" <| treeToList_inorder A
 
-
+    printfn "B = %A \n" B
+    printfn "remove 6 B = %A" <| remove 6 B
+    printfn "remove 4 B = %A" <| remove 4 B
+    printfn "B |> remove 4 |> remove 6 = %A" <| (B |> remove 4 |> remove 6) // bug, minimum has no elements?
     
     Console.ReadKey() |> ignore
     0 // Return exit code
