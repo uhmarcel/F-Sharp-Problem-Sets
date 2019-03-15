@@ -68,12 +68,21 @@ let rec treeToList_preorder = function
 
 let rec treeToList_postorder = function
     | Lf -> []
-    | Br(n, t1, t2) -> treeToList_postorder t1 @ treeToList_postorder t2 @ [n] // horrible inneficient
+    | Br(n, t1, t2) -> treeToList_postorder t1 @ treeToList_postorder t2 @ [n] // horribly inneficient
 
 let rec treeToList_inorder = function
     | Lf -> []
     | Br(n, t1, t2) -> treeToList_inorder t1 @ (n :: treeToList_inorder t2)
 
+
+let remove e = 
+    let rec remove_find e = function
+        | Lf -> Lf
+        | Br(n, t1, t2) when n = e ->  remove_find
+        | Br(n,t1,t2) -> if e < n then Br(n, remove_find t1, t2)
+                         else Br(n, t1, remove_find t2) 
+                        
+     
 
 [<EntryPoint>]
 let main argv =
@@ -111,6 +120,8 @@ let main argv =
     printfn "treeToList_preorder A = %A" <| treeToList_preorder A
     printfn "treeToList_postorder A = %A" <| treeToList_postorder A
     printfn "treeToList_inorder A = %A" <| treeToList_inorder A
+
+
     
     Console.ReadKey() |> ignore
     0 // Return exit code
