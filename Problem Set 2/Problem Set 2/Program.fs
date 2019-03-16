@@ -31,7 +31,7 @@ let rec coordinateReduce f = function
 
 // P2 - Creating a Syntax Parser
 
-type TERMINAL = IF|THEN|ELSE|BEGIN|END|PRINT|SEMICOLON|ID|EOF|ADD|SUB|MUL|LPAREN|RPAREN
+type TERMINAL = IF|THEN|ELSE|BEGIN|END|PRINT|SEMICOLON|ID|EOF|ADD|SUB|MUL|DIV|LPAREN|RPAREN
 
 let eat (T: TERMINAL) = function
     | [] -> failwith "Incompleted syntax, program ended early"
@@ -62,7 +62,6 @@ let parseProgram p =
 
 // P3 - Implement a parser using...
 
-let T ts = ts  // For testing
 
 let rec E tokens = 
     match (T tokens) with
@@ -71,6 +70,20 @@ let rec E tokens =
         | SUB::ts -> ts |> T
         | t::_ -> failwithf "Expected ADD or SUB. Found %A instead" t
 
+and T tokens =
+    match (F tokens) with
+        | [] -> failwith "Incompleted syntax, program ended early"
+        | MUL::ts -> ts |> T
+        | DIV::ts -> ts |> T
+        | t::_ -> failwithf "Expected MUL or DIV. Found %A instead" t
+
+and F tokens =
+    match tokens with
+        | [] -> failwith "Incompleted syntax, program ended early"
+        | ID::ts -> ts
+        | LPAREN::ts -> ts |> E |> eat(RPAREN)
+        | t::_ -> failwithf "Expected ID or LPAREN. Found %A instead" t
+    
 
 (*
     E -> E + T | E - T | T
