@@ -196,7 +196,37 @@ let rec evaluate = function
             | Some n1, Some n2 -> Some (n1 / n2)
             | _ -> None
     
-// Parse trees:
+// P11 - Student record
+
+type Student = {Name: string; Credits: int; GPA: float}
+
+let S1 = {Name = "Jones"; Credits = 109; GPA = 3.85}
+let S2 = {Name = "George"; Credits = 60; GPA = 3.15}
+let S3 = {Name = "Steve"; Credits = 121; GPA = 2.25}
+
+// P12 - Binary Search Tree remove
+
+type 'a Tree =
+    | Branch of 'a * 'a Tree * 'a Tree
+    | Leaf
+
+let rec minimum = function
+    | Branch (n, Leaf, _) -> n
+    | Branch (_, t1, _) -> minimum t1
+    | Leaf -> failwith "Tree has no elements"
+
+let rec remove e = function
+    | Leaf -> Leaf                              // If element is not found, ignore (return leaf)
+    | Branch(n, t1, Leaf) when e = n -> t1        // If element to remove has no right, replace with left child
+    | Branch(n,t1,t2) -> 
+        if e < n then Branch(n, remove e t1, t2)     // If element is smaller than current, search to remove in the left tree
+        elif e > n then Branch(n, t1, remove e t2)   // If element is greater than current, search to remove in the right tree
+        else                                     // If element is equal to current, find minimum of the right tree, put it as        
+            let m = minimum t2                   // the value on this current branch, and remove the minimum
+            Branch(m, t1, remove m t2)
+          
+// P13 - Parse trees
+// Part one:
 
 type pTree = 
     | Lf of TERMINAL
@@ -247,6 +277,7 @@ let P2_parse_with_tree program =
         | (EOF::_, _) -> failwith "EOF not at the end of the program"
         | (t::_, _) -> failwithf "Expected EOF, found %A instead" t
 
+// Part two:
 
 let P3_parse_with_tree program =
 
@@ -290,12 +321,6 @@ let P3_parse_with_tree program =
         | (EOF::_, _) -> failwith "EOF not at the end of the program"
         | (t::_, _) -> failwithf "Expected EOF, found %A instead" t
 
-
-type Student = {Name: string; Credits: int; GPA: float}
-
-let S1 = {Name = "Jones"; Credits = 109; GPA = 3.85}
-let S2 = {Name = "George"; Credits = 60; GPA = 3.15}
-let S3 = {Name = "Steve"; Credits = 121; GPA = 2.25}
     
 
 [<EntryPoint>]
@@ -448,7 +473,16 @@ let main argv =
 
 //  -------------------
 
+    printfn "Problem 12\n"
+    
+    let A = Branch(4, Branch(2,Leaf,Leaf), Branch(6,Leaf,Leaf))
 
+    printfn "A = %A \n" A
+    printfn "remove 6 A = %A" <| remove 6 A
+    printfn "remove 4 A = %A" <| remove 4 A
+    printfn "A |> remove 4 |> remove 6 = %A" <| (A |> remove 4 |> remove 6)
+    
+    printfn "\n"
 
 //  -------------------
  
