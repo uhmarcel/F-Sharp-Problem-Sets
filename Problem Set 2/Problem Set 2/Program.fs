@@ -42,9 +42,9 @@ let P2_parse program =
 
     let rec S = function 
         | [] -> failwith "Incompleted syntax, program ended early"
-        | IF::ts -> ts |> eat ID |> eat THEN |> S |> eat ELSE |> S
+        | IF::ts -> ts |> E |> eat THEN |> S |> eat ELSE |> S
         | BEGIN::ts -> ts |> S |> L 
-        | PRINT::ts -> ts |> eat ID
+        | PRINT::ts -> ts |> E
         | t::_ -> failwithf "Expected IF, BEGIN or PRINT. Found %A instead" t
 
     and L = function
@@ -52,6 +52,11 @@ let P2_parse program =
         | END::ts -> ts 
         | SEMICOLON::ts -> ts |> S |> L
         | t::_ ->  failwithf "Expected END or SEMICOLON. Found %A instead" t
+
+    and E = function        
+        | [] -> failwith "Incompleted syntax, program ended early"
+        | ID::ts -> ts 
+        | t::_ -> failwithf "Expected ID. Found %A instead" t
         
     match (program |> S) with
         | [] -> failwith "Missing EOF"
@@ -91,22 +96,6 @@ let P3_parse program =
         | EOF::_ -> failwith "EOF not at the end of the program"
         | t::_ -> failwithf "Expected EOF, found %A instead" t
     
-
-(*
-    E -> E + T | E - T | T
-    T -> T * F | T / F | F
-    F -> i | (E)
-Use the suggestion in the notes to get around the fact that this grammar appears to need more than one lookahead token.
-
-You do not have to parse input strings. Assume that the parsing has been done. Pass a list of tokens that represent a program into the start symbol. Try these program examples:
-
-	test_program [ID;ADD;ID;ADD;ID;ADD;ID;EOF]
-	test_program [ID;SUB;ID;MUL;ID;EOF]
-	test_program [LPAREN;ID;SUB;ID;RPAREN;MUL;ID;EOF] 
-        *)
-
-
-
 
 // P4 - Define an F# function curry f that converts an uncurried function to a 
 // curried function, and an F# function uncurry f that does the opposite conversion. 
@@ -207,10 +196,66 @@ let rec evaluate = function
             | Some n1, Some n2 -> Some (n1 / n2)
             | _ -> None
     
+// Parse trees:
+(*
+type pTree = 
+    | Lf of TERMINAL
+    | Br6 of pTree * pTree * pTree * pTree * pTree * pTree
+    | Br3 of pTree * pTree * pTree
+    | Br2 of pTree * pTree
+ 
+let P2_parse_with_tree program = 
 
-// P11 - Create a record type for Name, Credits and GPA.
-// Create a record instance with the values "Jones", 109, 3.85.
+    let rec S = function 
+        | [] -> failwith "Incompleted syntax, program ended early"
+        | IF::ts -> ts |> eat ID |> eat THEN |> S |> eat ELSE |> S
+        | BEGIN::ts -> ts |> S |> L 
+        | PRINT::ts -> ts |> eat ID
+        | t::_ -> failwithf "Expected IF, BEGIN or PRINT. Found %A instead" t
 
+    and L = function
+        | [] -> failwith "Incompleted syntax, program ended early"
+        | END::ts -> ts 
+        | SEMICOLON::ts -> ts |> S |> L
+        | t::_ ->  failwithf "Expected END or SEMICOLON. Found %A instead" t
+        
+    match (program |> S) with
+        | [] -> failwith "Missing EOF"
+        | EOF::[] -> printfn "Program Accepted"
+        | EOF::_ -> failwith "EOF not at the end of the program"
+        | t::_ -> failwithf "Expected EOF, found %A instead" t
+ *)
+(*
+let P3_parse_with_tree program =
+
+    let rec E tokens = 
+        match (T tokens) with
+            | [] -> failwith "Incompleted syntax, program ended early"
+            | ADD::ts -> ts |> E
+            | SUB::ts -> ts |> E
+            | t -> t
+
+    and T tokens =
+        match (F tokens) with
+            | [] -> failwith "Incompleted syntax, program ended early"
+            | MUL::ts -> ts |> T
+            | DIV::ts -> ts |> T
+            | t -> t
+
+    and F tokens =
+        match tokens with
+            | [] -> failwith "Incompleted syntax, program ended early"
+            | ID::ts -> ts
+            | LPAREN::ts -> ts |> E |> eat(RPAREN)
+            | t::_ -> failwithf "Expected ID or LPAREN. Found %A instead" t
+    
+    match (program |> E) with
+        | [] -> failwith "Missing EOF"
+        | EOF::[] -> printfn "Program accepted"
+        | EOF::_ -> failwith "EOF not at the end of the program"
+        | t::_ -> failwithf "Expected EOF, found %A instead" t
+
+   *)
 type Student = {Name: string; Credits: int; GPA: float}
 
 let S1 = {Name = "Jones"; Credits = 109; GPA = 3.85}
@@ -290,6 +335,7 @@ let main argv =
 //  -------------------
 
     printfn "Problem 4\n"
+
     printf "%A - " <| (+) 2 4                       // No syntax error, it is curried
     printf "%A - " <| uncurry (+) (2,3)             // No syntax error, it is uncurried
     printf "%A \n" <| curry (fun (x,y) -> x*y) 4 6  // No syntax error, it is curried
@@ -355,7 +401,7 @@ let main argv =
    
     printfn "\n"
 
-    //  -------------------
+//  -------------------
 
     printfn "Problem 11\n"
     
@@ -366,6 +412,12 @@ let main argv =
     printfn "\n"
 
 //  -------------------
+
+
+
+//  -------------------
+ 
+    printfn "Problem 13"
 
 
     Console.ReadKey() |> ignore
