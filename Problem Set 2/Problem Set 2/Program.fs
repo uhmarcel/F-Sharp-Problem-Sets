@@ -38,21 +38,20 @@ let eat (T: TERMINAL) = function
     | t::ts when t = T -> ts
     | t::_ -> failwithf "Expected %A, but %A was found instead" T t
 
-let rec S = function 
-    | [] -> failwith "Incompleted syntax, program ended early"
-    | IF::ts -> ts |> eat ID |> eat THEN |> S |> eat ELSE |> S
-    | BEGIN::ts -> ts |> S |> L 
-    | PRINT::ts -> ts |> eat ID
-    | t::_ -> failwithf "Expected IF, BEGIN or PRINT. Found %A instead" t
-
-    
-and L = function
-    | [] -> failwith "Incompleted syntax, program ended early"
-    | END::ts -> ts 
-    | SEMICOLON::ts -> ts |> S |> L
-    | t::_ ->  failwithf "Expected END or SEMICOLON. Found %A instead" t
-
 let parseProgram p =
+    let rec S = function 
+        | [] -> failwith "Incompleted syntax, program ended early"
+        | IF::ts -> ts |> eat ID |> eat THEN |> S |> eat ELSE |> S
+        | BEGIN::ts -> ts |> S |> L 
+        | PRINT::ts -> ts |> eat ID
+        | t::_ -> failwithf "Expected IF, BEGIN or PRINT. Found %A instead" t
+
+    and L = function
+        | [] -> failwith "Incompleted syntax, program ended early"
+        | END::ts -> ts 
+        | SEMICOLON::ts -> ts |> S |> L
+        | t::_ ->  failwithf "Expected END or SEMICOLON. Found %A instead" t
+
     let parsed = p |> S       
     match parsed with
         | [] -> failwith "Missing EOF or terminated early"
@@ -63,13 +62,29 @@ let parseProgram p =
 
 // P3 - Implement a parser using...
 
-//let ProblemThree =
-    
-//    let rec E = function
-//        | [] -> "Incompleted syntax, program ended early"
-//        | 
-    
-// WIP
+let T ts = ts  // For testing
+
+let rec E tokens = 
+    match (T tokens) with
+        | [] -> failwith "Incompleted syntax, program ended early"
+        | ADD::ts -> ts |> T
+        | SUB::ts -> ts |> T
+        | t::_ -> failwithf "Expected ADD or SUB. Found %A instead" t
+
+
+(*
+    E -> E + T | E - T | T
+    T -> T * F | T / F | F
+    F -> i | (E)
+Use the suggestion in the notes to get around the fact that this grammar appears to need more than one lookahead token.
+
+You do not have to parse input strings. Assume that the parsing has been done. Pass a list of tokens that represent a program into the start symbol. Try these program examples:
+
+	test_program [ID;ADD;ID;ADD;ID;ADD;ID;EOF]
+	test_program [ID;SUB;ID;MUL;ID;EOF]
+	test_program [LPAREN;ID;SUB;ID;RPAREN;MUL;ID;EOF] 
+        *)
+
 
 
 
@@ -303,6 +318,8 @@ let main argv =
     printfn "\n"
 
 //  -------------------
+
+
     Console.ReadKey() |> ignore
     0
     
