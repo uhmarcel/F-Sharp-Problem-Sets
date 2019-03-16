@@ -259,10 +259,14 @@ let P3_parse_with_tree program =
 
     and T tokens =
         match (F tokens) with
-            | [] -> failwith "Incompleted syntax, program ended early"
-            | MUL::ts -> ts |> T
-            | DIV::ts -> ts |> T
-            | t -> t
+            | ([], _) -> failwith "Incompleted syntax, program ended early"
+            | (MUL::ts, tree_F) -> 
+                let (ts, tree_T) = ts |> T
+                (ts, Br3(tree_F, Lf MUL, tree_T))
+            | (DIV::ts, tree_F) -> ts |> T
+                (ts, Br3(tree_F, Lf DIV, tree_T))
+            | (t, tree_F) -> 
+                (t, tree_F)
 
     and F tokens =
         match tokens with
@@ -272,7 +276,7 @@ let P3_parse_with_tree program =
             | LPAREN::ts -> 
                 let (ts, tree_E) = ts |> E 
                 let ts = ts |> eat(RPAREN)
-                (ts, Br3 (Lf LPAREN, tree_E, Lf RPAREN))
+                (ts, Br3(Lf LPAREN, tree_E, Lf RPAREN))
             | t::_ -> 
                 failwithf "Expected ID or LPAREN. Found %A instead" t
     
