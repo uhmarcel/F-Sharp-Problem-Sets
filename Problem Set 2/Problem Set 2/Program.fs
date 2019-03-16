@@ -439,8 +439,30 @@ let main argv =
 
 //  -------------------
  
-    printfn "Problem 13"
+    printfn "Problem 13 - Part one \n"
 
+    let A = [IF;ID;THEN;BEGIN;PRINT;ID;SEMICOLON;PRINT;ID;END;ELSE;PRINT;ID;EOF]
+    let B = [IF;ID;THEN;IF;ID;THEN;PRINT;ID;ELSE;PRINT;ID;ELSE;BEGIN;PRINT;ID;END;EOF]
+    let C = [IF;ID;THEN;BEGIN;PRINT;ID;SEMICOLON;PRINT;ID;SEMICOLON;END;ELSE;PRINT;ID;EOF]
+
+    printfn "Program A: %A" A
+    printfn "Program B: %A" B
+    printfn "Program C: %A\n" C
+
+    
+    printf "Program A -> " 
+    try P2_parse_with_tree A with | Failure(e) -> printfn "Syntax error: %s" e 
+    
+    printf "Program B -> " 
+    try P2_parse_with_tree B with | Failure(e) -> printfn "Syntax error: %s" e 
+    
+    printf "Program C -> " 
+    try P2_parse_with_tree C with | Failure(e) -> printfn "Syntax error: %s" e 
+    
+    printfn "\n"
+
+   
+    printfn "Problem 13 - Part two \n"
 
     Console.ReadKey() |> ignore
     0
