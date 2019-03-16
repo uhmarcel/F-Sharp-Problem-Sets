@@ -38,7 +38,8 @@ let eat (T: TERMINAL) = function
     | t::ts when t = T -> ts
     | t::_ -> failwithf "Expected %A, but %A was found instead" T t
 
-let parseProgram p =
+let P2_parse program =
+
     let rec S = function 
         | [] -> failwith "Incompleted syntax, program ended early"
         | IF::ts -> ts |> eat ID |> eat THEN |> S |> eat ELSE |> S
@@ -51,10 +52,9 @@ let parseProgram p =
         | END::ts -> ts 
         | SEMICOLON::ts -> ts |> S |> L
         | t::_ ->  failwithf "Expected END or SEMICOLON. Found %A instead" t
-
-    let parsed = p |> S       
-    match parsed with
-        | [] -> failwith "Missing EOF or terminated early"
+        
+    match (program |> S) with
+        | [] -> failwith "Missing EOF"
         | EOF::[] -> printfn "Program Accepted"
         | EOF::_ -> failwith "EOF not at the end of the program"
         | t::_ -> failwithf "Expected EOF, found %A instead" t
@@ -62,27 +62,34 @@ let parseProgram p =
 
 // P3 - Implement a parser using...
 
+let P3_parse program =
 
-let rec E tokens = 
-    match (T tokens) with
-        | [] -> failwith "Incompleted syntax, program ended early"
-        | ADD::ts -> ts |> T
-        | SUB::ts -> ts |> T
-        | t::_ -> failwithf "Expected ADD or SUB. Found %A instead" t
+    let rec E tokens = 
+        match (T tokens) with
+            | [] -> failwith "Incompleted syntax, program ended early"
+            | ADD::ts -> ts |> T
+            | SUB::ts -> ts |> T
+            | t::_ -> failwithf "Expected ADD or SUB. Found %A instead" t
 
-and T tokens =
-    match (F tokens) with
-        | [] -> failwith "Incompleted syntax, program ended early"
-        | MUL::ts -> ts |> T
-        | DIV::ts -> ts |> T
-        | t::_ -> failwithf "Expected MUL or DIV. Found %A instead" t
+    and T tokens =
+        match (F tokens) with
+            | [] -> failwith "Incompleted syntax, program ended early"
+            | MUL::ts -> ts |> T
+            | DIV::ts -> ts |> T
+            | t::_ -> failwithf "Expected MUL or DIV. Found %A instead" t
 
-and F tokens =
-    match tokens with
-        | [] -> failwith "Incompleted syntax, program ended early"
-        | ID::ts -> ts
-        | LPAREN::ts -> ts |> E |> eat(RPAREN)
-        | t::_ -> failwithf "Expected ID or LPAREN. Found %A instead" t
+    and F tokens =
+        match tokens with
+            | [] -> failwith "Incompleted syntax, program ended early"
+            | ID::ts -> ts
+            | LPAREN::ts -> ts |> E |> eat(RPAREN)
+            | t::_ -> failwithf "Expected ID or LPAREN. Found %A instead" t
+    
+    match (program |> E) with
+        | [] -> failwith "Missing EOF"
+        | EOF::[] -> printfn "Program accepted"
+        | EOF::_ -> failwith "EOF not at the end of the program"
+        | t::_ -> failwithf "Expected EOF, found %A instead" t
     
 
 (*
@@ -242,13 +249,36 @@ let main argv =
 
     
     printf "Program A -> " 
-    try parseProgram Program_A with | Failure(e) -> printfn "Syntax error: %s" e 
+    try P2_parse Program_A with | Failure(e) -> printfn "Syntax error: %s" e 
     
     printf "Program B -> " 
-    try parseProgram Program_B with | Failure(e) -> printfn "Syntax error: %s" e 
+    try P2_parse Program_B with | Failure(e) -> printfn "Syntax error: %s" e 
     
     printf "Program C -> " 
-    try parseProgram Program_C with | Failure(e) -> printfn "Syntax error: %s" e 
+    try P2_parse Program_C with | Failure(e) -> printfn "Syntax error: %s" e 
+    
+    printfn "\n"
+    
+//  -------------------
+
+    printfn "Problem 3\n"
+    
+    let A = [ID;ADD;ID;ADD;ID;ADD;ID;EOF]
+    let B = [ID;SUB;ID;MUL;ID;EOF]
+    let C = [LPAREN;ID;SUB;ID;RPAREN;MUL;ID;EOF] 
+
+    printfn "Program A: %A" A
+    printfn "Program B: %A" B
+    printfn "Program C: %A\n" C
+    
+    printf "Program A -> " 
+    try P3_parse A with | Failure(e) -> printfn "Syntax error: %s" e 
+    
+    printf "Program B -> " 
+    try P3_parse B with | Failure(e) -> printfn "Syntax error: %s" e 
+    
+    printf "Program C -> " 
+    try P3_parse C with | Failure(e) -> printfn "Syntax error: %s" e 
     
     printfn "\n"
     
