@@ -67,16 +67,16 @@ let P3_parse program =
     let rec E tokens = 
         match (T tokens) with
             | [] -> failwith "Incompleted syntax, program ended early"
-            | ADD::ts -> ts |> T
-            | SUB::ts -> ts |> T
-            | t::_ -> failwithf "Expected ADD or SUB. Found %A instead" t
+            | ADD::ts -> ts |> E
+            | SUB::ts -> ts |> E
+            | t -> t
 
     and T tokens =
         match (F tokens) with
             | [] -> failwith "Incompleted syntax, program ended early"
             | MUL::ts -> ts |> T
             | DIV::ts -> ts |> T
-            | t::_ -> failwithf "Expected MUL or DIV. Found %A instead" t
+            | t -> t
 
     and F tokens =
         match tokens with
@@ -266,10 +266,12 @@ let main argv =
     let A = [ID;ADD;ID;ADD;ID;ADD;ID;EOF]
     let B = [ID;SUB;ID;MUL;ID;EOF]
     let C = [LPAREN;ID;SUB;ID;RPAREN;MUL;ID;EOF] 
+    let D = [ID;MUL;LPAREN;ID;ADD;ID;ADD;RPAREN;EOF]
 
     printfn "Program A: %A" A
     printfn "Program B: %A" B
-    printfn "Program C: %A\n" C
+    printfn "Program C: %A" C
+    printfn "Program C: %A\n" D
     
     printf "Program A -> " 
     try P3_parse A with | Failure(e) -> printfn "Syntax error: %s" e 
@@ -279,6 +281,9 @@ let main argv =
     
     printf "Program C -> " 
     try P3_parse C with | Failure(e) -> printfn "Syntax error: %s" e 
+        
+    printf "Program D -> " 
+    try P3_parse D with | Failure(e) -> printfn "Syntax error: %s" e 
     
     printfn "\n"
     
