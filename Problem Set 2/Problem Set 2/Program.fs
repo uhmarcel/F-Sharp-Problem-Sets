@@ -252,9 +252,13 @@ let P3_parse_with_tree program =
 
     let rec E tokens = 
         match (T tokens) with
-            | [] -> failwith "Incompleted syntax, program ended early"
-            | ADD::ts -> ts |> E
-            | SUB::ts -> ts |> E
+            | ([], _) -> failwith "Incompleted syntax, program ended early"
+            | (ADD::ts, tree_T) -> 
+                let (ts, tree_E) = ts |> E
+                (ts, Br3(tree_T, Lf ADD, tree_E))
+            | (SUB::ts, tree_T) ->
+                let (ts, tree_E) = ts |> E
+                (ts, Br3(tree_T, Lf SUB, tree_E))
             | t -> t
 
     and T tokens =
@@ -263,10 +267,10 @@ let P3_parse_with_tree program =
             | (MUL::ts, tree_F) -> 
                 let (ts, tree_T) = ts |> T
                 (ts, Br3(tree_F, Lf MUL, tree_T))
-            | (DIV::ts, tree_F) -> ts |> T
+            | (DIV::ts, tree_F) -> 
+                let (ts, tree_T) = ts |> T
                 (ts, Br3(tree_F, Lf DIV, tree_T))
-            | (t, tree_F) -> 
-                (t, tree_F)
+            | t -> t 
 
     and F tokens =
         match tokens with
@@ -281,10 +285,10 @@ let P3_parse_with_tree program =
                 failwithf "Expected ID or LPAREN. Found %A instead" t
     
     match (program |> E) with
-        | [] -> failwith "Missing EOF"
-        | EOF::[] -> printfn "Program accepted"
-        | EOF::_ -> failwith "EOF not at the end of the program"
-        | t::_ -> failwithf "Expected EOF, found %A instead" t
+        | ([], _) -> failwith "Missing EOF"
+        | (EOF::[], p) -> printfn "%A" p
+        | (EOF::_, _) -> failwith "EOF not at the end of the program"
+        | (t::_, _) -> failwithf "Expected EOF, found %A instead" t
 
 
 type Student = {Name: string; Credits: int; GPA: float}
@@ -347,7 +351,7 @@ let main argv =
     printfn "Program A: %A" A
     printfn "Program B: %A" B
     printfn "Program C: %A" C
-    printfn "Program C: %A\n" D
+    printfn "Program D: %A\n" D
     
     printf "Program A -> " 
     try P3_parse A with | Failure(e) -> printfn "Syntax error: %s" e 
@@ -472,6 +476,32 @@ let main argv =
 
    
     printfn "Problem 13 - Part two \n"
+    
+    let A = [ID;ADD;ID;ADD;ID;ADD;ID;EOF]
+    let B = [ID;SUB;ID;MUL;ID;EOF]
+    let C = [LPAREN;ID;SUB;ID;RPAREN;MUL;ID;EOF] 
+    let D = [ID;MUL;LPAREN;ID;ADD;ID;ADD;RPAREN;EOF]
+
+    printfn "Program A: %A" A
+    printfn "Program B: %A" B
+    printfn "Program C: %A" C
+    printfn "Program D: %A\n" D
+    
+    printf "Program A -> " 
+    try P3_parse_with_tree A with | Failure(e) -> printfn "Syntax error: %s" e 
+    
+    printf "Program B -> " 
+    try P3_parse_with_tree B with | Failure(e) -> printfn "Syntax error: %s" e 
+    
+    printf "Program C -> " 
+    try P3_parse_with_tree C with | Failure(e) -> printfn "Syntax error: %s" e 
+        
+    printf "Program D -> " 
+    try P3_parse_with_tree D with | Failure(e) -> printfn "Syntax error: %s" e 
+    
+    printfn "\n"
+    
+//  -------------------
 
     Console.ReadKey() |> ignore
     0
