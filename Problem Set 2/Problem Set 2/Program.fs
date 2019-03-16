@@ -197,34 +197,56 @@ let rec evaluate = function
             | _ -> None
     
 // Parse trees:
-(*
+
 type pTree = 
     | Lf of TERMINAL
     | Br6 of pTree * pTree * pTree * pTree * pTree * pTree
     | Br3 of pTree * pTree * pTree
     | Br2 of pTree * pTree
  
-let P2_parse_with_tree program = 
+let P2_parse_with_tree program =
 
     let rec S = function 
         | [] -> failwith "Incompleted syntax, program ended early"
-        | IF::ts -> ts |> eat ID |> eat THEN |> S |> eat ELSE |> S
-        | BEGIN::ts -> ts |> S |> L 
-        | PRINT::ts -> ts |> eat ID
-        | t::_ -> failwithf "Expected IF, BEGIN or PRINT. Found %A instead" t
+        | IF::ts -> 
+            let (ts, tree_E ) = ts |> E 
+            let (ts, tree_S1) = ts |> eat THEN |> S
+            let (ts, tree_S2) = ts |> eat ELSE |> S
+            (ts, Br6(Lf IF, tree_E, Lf THEN, tree_S1, Lf ELSE, tree_S2))
+        | BEGIN::ts -> 
+            let (ts, tree_S) = ts |> S 
+            let (ts, tree_L) = ts |> L 
+            (ts, Br3(Lf BEGIN, tree_S, tree_L))
+        | PRINT::ts -> 
+            let (ts, tree_E) = ts |> E
+            (ts, Br2(Lf PRINT, tree_E))
+        | t::_ -> 
+            failwithf "Expected IF, BEGIN or PRINT. Found %A instead" t
 
     and L = function
         | [] -> failwith "Incompleted syntax, program ended early"
-        | END::ts -> ts 
-        | SEMICOLON::ts -> ts |> S |> L
-        | t::_ ->  failwithf "Expected END or SEMICOLON. Found %A instead" t
+        | END::ts -> 
+            (ts, Lf END) 
+        | SEMICOLON::ts -> 
+            let (ts, tree_S) = ts |> S 
+            let (ts, tree_L) = ts |> L
+            (ts, Br3(Lf SEMICOLON, tree_S, tree_L))
+        | t::_ ->  
+            failwithf "Expected END or SEMICOLON. Found %A instead" t
+
+    and E = function        
+        | [] -> failwith "Incompleted syntax, program ended early"
+        | ID::ts -> 
+            (ts, Lf ID) 
+        | t::_ -> 
+            failwithf "Expected ID. Found %A instead" t
         
     match (program |> S) with
-        | [] -> failwith "Missing EOF"
-        | EOF::[] -> printfn "Program Accepted"
-        | EOF::_ -> failwith "EOF not at the end of the program"
-        | t::_ -> failwithf "Expected EOF, found %A instead" t
- *)
+        | ([], _) -> failwith "Missing EOF"
+        | (EOF::[], p) -> printfn "%A" p
+        | (EOF::_, _) -> failwith "EOF not at the end of the program"
+        | (t::_, _) -> failwithf "Expected EOF, found %A instead" t
+
 (*
 let P3_parse_with_tree program =
 
