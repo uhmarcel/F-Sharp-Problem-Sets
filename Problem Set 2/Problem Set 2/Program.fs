@@ -247,7 +247,7 @@ let P2_parse_with_tree program =
         | (EOF::_, _) -> failwith "EOF not at the end of the program"
         | (t::_, _) -> failwithf "Expected EOF, found %A instead" t
 
-(*
+
 let P3_parse_with_tree program =
 
     let rec E tokens = 
@@ -267,9 +267,14 @@ let P3_parse_with_tree program =
     and F tokens =
         match tokens with
             | [] -> failwith "Incompleted syntax, program ended early"
-            | ID::ts -> ts
-            | LPAREN::ts -> ts |> E |> eat(RPAREN)
-            | t::_ -> failwithf "Expected ID or LPAREN. Found %A instead" t
+            | ID::ts -> 
+                (ts, Lf ID)
+            | LPAREN::ts -> 
+                let (ts, tree_E) = ts |> E 
+                let ts = ts |> eat(RPAREN)
+                (ts, Br3 (Lf LPAREN, tree_E, Lf RPAREN))
+            | t::_ -> 
+                failwithf "Expected ID or LPAREN. Found %A instead" t
     
     match (program |> E) with
         | [] -> failwith "Missing EOF"
@@ -277,7 +282,7 @@ let P3_parse_with_tree program =
         | EOF::_ -> failwith "EOF not at the end of the program"
         | t::_ -> failwithf "Expected EOF, found %A instead" t
 
-   *)
+
 type Student = {Name: string; Credits: int; GPA: float}
 
 let S1 = {Name = "Jones"; Credits = 109; GPA = 3.85}
