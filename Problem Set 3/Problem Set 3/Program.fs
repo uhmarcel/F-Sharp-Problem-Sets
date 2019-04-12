@@ -18,5 +18,15 @@ let rec toLinkedList = function
 
 [<EntryPoint>]
 let main argv =
+
+    printfn "Problem 1\n"
+    
+    printfn "toLinkedList [] = %A" <| toLinkedList []
+    printfn "toLinkedList ['do'; 're'] = %A" <| toLinkedList ["do"; "re"]
+    printfn "toLinkedList [1..6] = %A" <| toLinkedList [1..6]
+    printfn "\n"
+
+//  -------------------
+
     Console.ReadKey() |> ignore
     0
