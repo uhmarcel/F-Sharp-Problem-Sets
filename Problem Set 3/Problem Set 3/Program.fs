@@ -27,6 +27,19 @@ let interleave xs ys =
         | x::xs, y::ys -> loop (y::x::acc) (xs, ys)
     loop [] (xs, ys)
         
+
+// P8 - Create a tail-recursive function that has a big integer as input and calculates 2I 
+// raised to that power.
+// Calculate these powers of 2I: 0I, 1I, 2I, 4I, 16I, 256I, 1024I, 32768I and 65536I.
+
+let exponential n =
+    let rec loop acc n = 
+        if n = 0I then 1I
+        elif n = 1I then acc
+        else loop (2I * acc) (n - 1I) 
+    loop 1I n
+
+
         
 
 [<EntryPoint>]
