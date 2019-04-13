@@ -22,9 +22,9 @@ let rec toLinkedList = function
 
 let interleave xs ys =
     let rec loop acc = function
-        | [], [] -> acc
+        | [], [] -> List.rev acc
         | [], _ | _, [] -> failwith "Lists are not the same size"
-        | x::xs, y::ys -> loop (x::y::acc) (xs, ys)
+        | x::xs, y::ys -> loop (y::x::acc) (xs, ys)
     loop [] (xs, ys)
         
         
@@ -39,7 +39,17 @@ let main argv =
     printfn "toLinkedList [1..6] = %A" <| toLinkedList [1..6]
     printfn "\n"
 
-//  -------------------
+    //  -------------------
 
+    printfn "Problem 5\n"
+    
+    printfn "interleave [] [] = %A" <| interleave [] []
+    printfn "interleave [3;5;7] [4;6;8] = %A" <| interleave [3;5;7] [4;6;8]
+    printfn "interleave [1..6] [3..9] = %A" <| interleave [1..6] [4..9]
+    printfn "interleave ['how'; 'you'] ['are'; 'doing'] = %A" <| interleave ["how"; "you"] ["are"; "doing"]
+  
+    printfn "\n"
+
+    //  -------------------
     Console.ReadKey() |> ignore
     0
