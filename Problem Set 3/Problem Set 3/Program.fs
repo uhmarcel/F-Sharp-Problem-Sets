@@ -37,7 +37,7 @@ let exponential n =
         if n = 0I then 1I
         elif n = 1I then acc
         else loop (2I * acc) (n - 1I) 
-    loop 1I n
+    loop 2I n
 
 
         
@@ -50,6 +50,7 @@ let main argv =
     printfn "toLinkedList [] = %A" <| toLinkedList []
     printfn "toLinkedList ['do'; 're'] = %A" <| toLinkedList ["do"; "re"]
     printfn "toLinkedList [1..6] = %A" <| toLinkedList [1..6]
+
     printfn "\n"
 
     //  -------------------
@@ -61,6 +62,21 @@ let main argv =
     printfn "interleave [1..6] [3..9] = %A" <| interleave [1..6] [4..9]
     printfn "interleave ['how'; 'you'] ['are'; 'doing'] = %A" <| interleave ["how"; "you"] ["are"; "doing"]
   
+    printfn "\n"
+
+    //  -------------------
+    
+    printfn "Problem 8\n"
+    
+    printfn "exponential 0I = %A" <| exponential 0I
+    printfn "exponential 1I = %A" <| exponential 1I
+    printfn "exponential 2I = %A" <| exponential 2I
+    printfn "exponential 4I = %A" <| exponential 4I
+    printfn "exponential 16I = %A" <| exponential 16I
+    printfn "exponential 256I = %A" <| exponential 256I
+    printfn "exponential 1024I = %A" <| exponential 1024I
+    printfn "exponential 65536I = %A" <| exponential 65536I
+
     printfn "\n"
 
     //  -------------------
