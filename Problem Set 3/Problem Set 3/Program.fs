@@ -14,7 +14,20 @@ type 'a LinkedList =
 let rec toLinkedList = function
     | [] -> Null
     | x::xs -> Node (x, toLinkedList xs)
-    
+
+
+// P5 - Write a tail-recursive F# function interleave(xs,ys) that interleaves two lists
+// Compare the timing of the recursive function from Problem Set 1 with this tail-recursive
+// version. Time these examples in both versions.
+
+let interleave xs ys =
+    let rec loop acc = function
+        | [], [] -> acc
+        | [], _ | _, [] -> failwith "Lists are not the same size"
+        | x::xs, y::ys -> loop (x::y::acc) (xs, ys)
+    loop [] (xs, ys)
+        
+        
 
 [<EntryPoint>]
 let main argv =
