@@ -16,6 +16,16 @@ let rec toLinkedList = function
     | x::xs -> Node (x, toLinkedList xs)
 
 
+// P3 - A palindrome is a word that is spelled the same backwards as forwards. Our palindromes
+// will have a vertical bar in the middle, to separate the first half from the second half.
+
+// a) Write a CFG to recognize palindromes over the alphabet {a, b, |}, with the bar in the middle.
+    
+    // S -> aSa | bSb | '|'
+
+
+
+
 // P5 - Write a tail-recursive F# function interleave(xs,ys) that interleaves two lists
 // Compare the timing of the recursive function from Problem Set 1 with this tail-recursive
 // version. Time these examples in both versions.
