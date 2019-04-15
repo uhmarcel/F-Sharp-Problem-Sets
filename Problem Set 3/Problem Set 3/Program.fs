@@ -59,6 +59,36 @@ let syntax_P3 program =
         | EOF::_ -> failwith "EOF not at the end of the program"
         | t::_ -> failwithf "Expected EOF, found %A instead" t
 
+// d) Extend the syntax checker so it generates an abstract syntax tree and displays it, 
+// for valid palindromes.
+
+type SyntaxTree =
+    | Br3 of SyntaxTree * SyntaxTree * SyntaxTree  
+    | Lf of P3_TOKEN
+
+let syntax_tree_P3 program =
+    
+    let rec S = function 
+        | [] -> failwith "Program ended early"
+        | A::ts -> 
+            let (ts, tree_S) = ts |> S
+            let ts = ts |> eat A
+            (ts, Br3(Lf A, tree_S, Lf A))
+        | B::ts -> 
+            let (ts, tree_S) = ts |> S
+            let ts = ts |> eat B
+            (ts, Br3(Lf B, tree_S, Lf B))
+        | BAR::ts -> 
+            (ts, Lf BAR)
+        | t::_ -> 
+            failwithf "Expected A, B or BAR. Found %A instead." t
+    
+    match (program |> S) with
+        | ([], _) -> failwith "Missing EOF"
+        | (EOF::[], p) -> printfn "%A" p
+        | (EOF::_, _) -> failwith "EOF not at the end of the program"
+        | (t::_, _) -> failwithf "Expected EOF, found %A instead" t
+
 
 // P5 - Write a tail-recursive F# function interleave(xs,ys) that interleaves two lists
 // Compare the timing of the recursive function from Problem Set 1 with this tail-recursive
