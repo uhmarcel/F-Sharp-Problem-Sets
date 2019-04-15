@@ -35,7 +35,7 @@ let parse_P3 string =
                   | 'b' -> loop s (B::tokens) (n-1)
                   | '|' -> loop s (BAR::tokens) (n-1)
                   | _ -> loop s (UNDEF::tokens) (n-1)
-    loop string [] (string.Length - 1)    
+    loop string [EOF] (string.Length - 1)    
 
 
 
@@ -77,6 +77,20 @@ let main argv =
     printfn "\n"
 
     //  -------------------
+    
+    printfn "Problem 3\n"
+    
+    printfn "Part A:"
+    printfn "S -> aSa | bSb | '|' \n"
+    
+    printfn "Part B:"
+    printfn "parser 'ab|ba' = %A" <| parse_P3 ""
+    printfn "parser 'ab|ba' = %A" <| parse_P3 "ab|ba"
+    printfn "parser 'ab|ba' = %A \n" <| parse_P3 "aac|baa"
+
+    printfn "\n"
+
+    //  -------------------
 
     printfn "Problem 5\n"
     
@@ -97,8 +111,8 @@ let main argv =
     printfn "exponential 4I = %A" <| exponential 4I
     printfn "exponential 16I = %A" <| exponential 16I
     printfn "exponential 256I = %A" <| exponential 256I
-    printfn "exponential 1024I = %A" <| exponential 1024I
-    printfn "exponential 65536I = %A" <| exponential 65536I
+    //printfn "exponential 1024I = %A" <| exponential 1024I
+    //printfn "exponential 65536I = %A" <| exponential 65536I
 
     printfn "\n"
 
