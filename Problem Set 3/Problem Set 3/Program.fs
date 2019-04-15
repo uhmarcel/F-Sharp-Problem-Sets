@@ -137,21 +137,42 @@ let main argv =
     let Program_A = parse_P3 ""
     let Program_B = parse_P3 "ab|ba"
     let Program_C = parse_P3 "aac|baa"
+    let Program_D = parse_P3 "aba|baa"
+    let Program_E = parse_P3 "bab|bab"
 
     printfn "Part B:"
     printfn "parser '' = %A" <| Program_A
     printfn "parser 'ab|ba' = %A" <| Program_B
     printfn "parser 'aac|baa' = %A \n" <| Program_C
+    printfn "parser 'aba|baa' = %A \n" <| Program_D
+    printfn "parser 'bab|bab' = %A \n" <| Program_E
 
     printfn "Part C:"
     printf "Program A -> " 
     try syntax_P3 Program_A with | Failure(e) -> printfn "Syntax error: %s" e 
-
     printf "Program B -> " 
     try syntax_P3 Program_B with | Failure(e) -> printfn "Syntax error: %s" e 
-    
     printf "Program C -> " 
     try syntax_P3 Program_C with | Failure(e) -> printfn "Syntax error: %s" e 
+    printf "Program D -> " 
+    try syntax_P3 Program_D with | Failure(e) -> printfn "Syntax error: %s" e     
+    printf "Program E -> " 
+    try syntax_P3 Program_E with | Failure(e) -> printfn "Syntax error: %s" e 
+    printfn ""
+
+    printfn "Part D:"
+    printf "Program A -> " 
+    try syntax_tree_P3 Program_A with | Failure(e) -> printfn "Syntax error: %s" e 
+    printf "Program B -> " 
+    try syntax_tree_P3 Program_B with | Failure(e) -> printfn "Syntax error: %s" e 
+    printf "Program C -> " 
+    try syntax_tree_P3 Program_C with | Failure(e) -> printfn "Syntax error: %s" e 
+    printf "Program D -> " 
+    try syntax_tree_P3 Program_D with | Failure(e) -> printfn "Syntax error: %s" e 
+    printf "Program E -> " 
+    try syntax_tree_P3 Program_E with | Failure(e) -> printfn "Syntax error: %s" e 
+
+    printfn ""
 
     printfn "\n"
 
