@@ -37,6 +37,23 @@ let parse_P3 string =
                   | _ -> loop s (UNDEF::tokens) (n-1)
     loop string [EOF] (string.Length - 1)    
 
+// c) Write a syntax checker that verifies if a list of tokens represents a palindrome.
+
+let eat token = function
+    | [] -> failwithf "Expected %A" token
+    | t::ts when t = token -> ts
+    | t::_ -> failwithf "Expected %A, but found %A intead" token t
+    
+let syntax_P3 tokens =
+    let rec S = function 
+        | [] -> "Program ended early"
+        | A::ts -> ts |> S |> eat A
+        | B::ts -> ts |> S |> eat B
+        | BAR::ts -> ts
+        | t::_ -> failwithf "Expected A, B or BAR. Found %A instead." t
+    
+
+
 
 
 // P5 - Write a tail-recursive F# function interleave(xs,ys) that interleaves two lists
