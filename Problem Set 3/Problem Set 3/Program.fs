@@ -39,21 +39,25 @@ let parse_P3 string =
 
 // c) Write a syntax checker that verifies if a list of tokens represents a palindrome.
 
-let eat token = function
-    | [] -> failwithf "Expected %A" token
-    | t::ts when t = token -> ts
-    | t::_ -> failwithf "Expected %A, but found %A intead" token t
+let eat (T: P3_TOKEN) = function
+    | [] -> failwithf "Expected %A" T
+    | t::ts when t = T -> ts
+    | t::_ -> failwithf "Expected %A, but found %A intead" T t
     
-let syntax_P3 tokens =
+let syntax_P3 program =
+    
     let rec S = function 
-        | [] -> "Program ended early"
+        | [] -> failwith "Program ended early"
         | A::ts -> ts |> S |> eat A
         | B::ts -> ts |> S |> eat B
         | BAR::ts -> ts
         | t::_ -> failwithf "Expected A, B or BAR. Found %A instead." t
     
-
-
+    match (program |> S) with
+        | [] -> failwith "Missing EOF"
+        | EOF::[] -> printfn "Program Accepted"
+        | EOF::_ -> failwith "EOF not at the end of the program"
+        | t::_ -> failwithf "Expected EOF, found %A instead" t
 
 
 // P5 - Write a tail-recursive F# function interleave(xs,ys) that interleaves two lists
@@ -100,10 +104,24 @@ let main argv =
     printfn "Part A:"
     printfn "S -> aSa | bSb | '|' \n"
     
+    let Program_A = parse_P3 ""
+    let Program_B = parse_P3 "ab|ba"
+    let Program_C = parse_P3 "aac|baa"
+
     printfn "Part B:"
-    printfn "parser 'ab|ba' = %A" <| parse_P3 ""
-    printfn "parser 'ab|ba' = %A" <| parse_P3 "ab|ba"
-    printfn "parser 'ab|ba' = %A \n" <| parse_P3 "aac|baa"
+    printfn "parser '' = %A" <| Program_A
+    printfn "parser 'ab|ba' = %A" <| Program_B
+    printfn "parser 'aac|baa' = %A \n" <| Program_C
+
+    printfn "Part C:"
+    printf "Program A -> " 
+    try syntax_P3 Program_A with | Failure(e) -> printfn "Syntax error: %s" e 
+
+    printf "Program B -> " 
+    try syntax_P3 Program_B with | Failure(e) -> printfn "Syntax error: %s" e 
+    
+    printf "Program C -> " 
+    try syntax_P3 Program_C with | Failure(e) -> printfn "Syntax error: %s" e 
 
     printfn "\n"
 
