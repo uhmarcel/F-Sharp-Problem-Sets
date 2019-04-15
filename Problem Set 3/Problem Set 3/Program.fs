@@ -23,6 +23,19 @@ let rec toLinkedList = function
     
     // S -> aSa | bSb | '|'
 
+// b) Write a parse function that accepts a string and generates tokens for the language.
+
+type P3_TOKEN = A | B | BAR | EOF | UNDEF
+
+let parse_P3 string =
+    let rec loop (s: string) tokens = function
+        | -1 -> tokens
+        | n  -> match s.[n] with
+                  | 'a' -> loop s (A::tokens) (n-1)
+                  | 'b' -> loop s (B::tokens) (n-1)
+                  | '|' -> loop s (BAR::tokens) (n-1)
+                  | _ -> loop s (UNDEF::tokens) (n-1)
+    loop string [] (string.Length - 1)    
 
 
 
