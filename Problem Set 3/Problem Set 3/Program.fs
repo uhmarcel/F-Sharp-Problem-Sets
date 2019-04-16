@@ -123,6 +123,34 @@ let getNth stream n =
 let rec alternatingStream n =  Cons ((-1.0)**n / 2.0**(n + 1.0), fun () -> alternatingStream (n + 1.0))
 
 
+// P7 - Multiples of a list
+// a) Generate an infinite stream for the the natural numbers greater than zero 
+// that are divisible by each element in a list of four elements. Use four, nested
+// calls of filter on the infinite stream of natural numbers starting at one.
+// b) Display the 20th through 30th numbers in the series.
+// c) Repeat the exercise using an infinite sequence. Sequences also have a filter function, 
+// so it can be solved similarly to the infinite stream version. 
+// Just for fun, try to solve it without using the filter function.
+// d) For both functions, be sure to dislay an appropriate error message if the list does not 
+// have exactly four elements.
+
+let rec filter f (Cons (x, xsf)) = 
+    if f x then Cons (x, fun () -> filter f (xsf()))
+    else filter f (xsf())
+
+let rec take n (Cons (x, xsf)) =
+    if n = 0 then []
+    else x :: take (n-1) (xsf())
+
+let rec drop n (Cons (x, xsf)) =
+    if n = 0 then (Cons (x, xsf))
+    else drop (n-1) (xsf())
+
+let rec naturalNumbers n = Cons (n, fun () -> naturalNumbers (n+1))
+
+let rec applyFilters stream = function
+    | [] -> stream
+    | f::fs -> applyFilters (filter (fun y -> y % f = 0) stream) fs
 
 
 // P8 - Create a tail-recursive function that has a big integer as input and calculates 2I 
@@ -218,16 +246,29 @@ let main argv =
     
     printfn "Problem 6\n"
     
-    for i=1 to 5 do
+    for i = 1 to 5 do
         alternatingSeqEnum.MoveNext() |> ignore
     printfn "infinite sequence 5th number = %A" <| alternatingSeqEnum.Current
 
-    for i=1 to 10 do
+    for i = 1 to 10 do
         alternatingSeqEnum.MoveNext() |> ignore
     printfn "infinite sequence 15th number = %A" <| alternatingSeqEnum.Current
 
     printfn "infinite stream 5th number = %A" <| getNth alternatingStream 5
     printfn "infinite stream 15th number = %A" <| getNth alternatingStream 15
+
+    printfn "\n"
+    
+    //  -------------------
+    
+    printfn "Problem 7\n"
+    
+    printfn "Part A:"
+    printfn "infinite stream [2;3;21;10] = %A \n" <| take 6 (applyFilters (naturalNumbers 1) [2;3;21;10])
+
+    printfn "Part B:"
+    printfn "ininite stream from 20th to 30th = %A \n" <| (applyFilters (naturalNumbers 1) [2;3;21;10] |> drop 20 |> take 10)
+    
 
     printfn "\n"
 
