@@ -102,6 +102,17 @@ let interleave xs ys =
     loop [] (xs, ys)
         
 
+// P6 - Alternating series
+// a) Generate an infinite sequence for the alternating series of 1/(2**n):
+// b) Display the 5th through 15th numbers in the series. 
+// c) Repeat the exercise using an infinite stream.
+
+let alternatingSeq = Seq.initInfinite( fun n -> (-1.0)**float(n) / (2.0**float(n)) ) 
+
+let alternatingSeqEnum = alternatingSeq.GetEnumerator()
+
+
+
 // P8 - Create a tail-recursive function that has a big integer as input and calculates 2I 
 // raised to that power.
 // Calculate these powers of 2I: 0I, 1I, 2I, 4I, 16I, 256I, 1024I, 32768I and 65536I.
@@ -171,7 +182,11 @@ let main argv =
     try syntax_tree_P3 Program_D with | Failure(e) -> printfn "Syntax error: %s" e 
     printf "Program E -> " 
     try syntax_tree_P3 Program_E with | Failure(e) -> printfn "Syntax error: %s" e 
+    printfn ""
 
+    printfn "Full example:"
+    printfn "syntax_check (parse 'aabab|babaa') ="
+    syntax_tree_P3 (parse_P3 "aabab|babaa")
     printfn ""
 
     printfn "\n"
@@ -189,6 +204,19 @@ let main argv =
 
     //  -------------------
     
+    printfn "Problem 6\n"
+    
+    for i=1 to 5 do
+        alternatingSeqEnum.MoveNext() |> ignore
+    printfn "infinite sequence 5th number = %A" <| alternatingSeqEnum.Current
+
+    for i=1 to 10 do
+        alternatingSeqEnum.MoveNext() |> ignore
+    printfn "infinite sequence 15th number = %A" <| alternatingSeqEnum.Current
+
+    printfn "\n"
+
+    //  -------------------
     printfn "Problem 8\n"
     
     printfn "exponential 0I = %A" <| exponential 0I
