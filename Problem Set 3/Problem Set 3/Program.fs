@@ -153,6 +153,30 @@ let rec applyFilters stream = function
     | f::fs -> applyFilters (filter (fun y -> y % f = 0) stream) fs
 
 
+let naturalSequence = Seq.initInfinite( fun n -> n )
+let naturalEnumerator = naturalSequence.GetEnumerator()
+naturalEnumerator.MoveNext() |> ignore
+
+let layeredFilter = function
+    | [] -> failwith "Empty list"
+    | x::y::z::w::[] -> (fun n -> n % x = 0 && n % y = 0 && n % z = 0 && n % w = 0)
+    | _ -> failwith "Expecting four filters"
+    
+let rec moveNextFilter fs = 
+    naturalEnumerator.MoveNext() |> ignore
+    if (layeredFilter fs) naturalEnumerator.Current then naturalEnumerator.Current
+    else moveNextFilter fs
+
+let takeFilteredSeq fs n =
+    let rec loop acc = function
+        | 0 -> List.rev acc
+        | n -> loop ((moveNextFilter fs)::acc) (n-1)
+    loop [] n
+
+let moveFilteredSeq fs n =
+    for i = 1 to n do moveNextFilter fs |> ignore
+
+
 // P8 - Create a tail-recursive function that has a big integer as input and calculates 2I 
 // raised to that power.
 // Calculate these powers of 2I: 0I, 1I, 2I, 4I, 16I, 256I, 1024I, 32768I and 65536I.
@@ -269,6 +293,11 @@ let main argv =
     printfn "Part B:"
     printfn "ininite stream from 20th to 30th = %A \n" <| (applyFilters (naturalNumbers 1) [2;3;21;10] |> drop 20 |> take 10)
     
+    printfn "Part C:"
+    printfn "infinite sequence [2;3;21;10] = %A" <| takeFilteredSeq [2;3;21;10] 6
+    
+    moveFilteredSeq [2;3;21;10] 14
+    printfn "infinite sequence from 20th to 30th = %A \n" <| takeFilteredSeq [2;3;21;10] 10 
 
     printfn "\n"
 
