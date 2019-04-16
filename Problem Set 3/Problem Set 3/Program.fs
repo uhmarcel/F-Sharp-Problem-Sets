@@ -107,9 +107,21 @@ let interleave xs ys =
 // b) Display the 5th through 15th numbers in the series. 
 // c) Repeat the exercise using an infinite stream.
 
-let alternatingSeq = Seq.initInfinite( fun n -> (-1.0)**float(n) / (2.0**float(n)) ) 
-
+let alternatingSeq = Seq.initInfinite( fun n -> (-1.0)**float(n) / (2.0**float(n + 1)) ) 
 let alternatingSeqEnum = alternatingSeq.GetEnumerator()
+
+type 'a InfiniteStream =
+    Cons of 'a * (unit -> 'a InfiniteStream)
+
+let getNth stream n = 
+    let rec inner (Cons (x, xsf)) = function
+        | 0 -> failwith "Undefined zero-th element"
+        | 1 -> x
+        | n -> inner (xsf()) (n-1)
+    inner (stream LanguagePrimitives.GenericZero) n
+
+let rec alternatingStream n =  Cons ((-1.0)**n / 2.0**(n + 1.0), fun () -> alternatingStream (n + 1.0))
+
 
 
 
@@ -213,6 +225,9 @@ let main argv =
     for i=1 to 10 do
         alternatingSeqEnum.MoveNext() |> ignore
     printfn "infinite sequence 15th number = %A" <| alternatingSeqEnum.Current
+
+    printfn "infinite stream 5th number = %A" <| getNth alternatingStream 5
+    printfn "infinite stream 15th number = %A" <| getNth alternatingStream 15
 
     printfn "\n"
 
