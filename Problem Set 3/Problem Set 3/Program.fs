@@ -189,6 +189,22 @@ let exponential n =
     loop 2I n
 
 
+// P11 - Write a non-recursive fibonacci function using imperative F#.
+// Compare the timing with a tail-recursive fibonacci.
+
+let imperativeFib n = 
+    let curr = ref 1
+    let prev = ref 0
+    
+    if n = 0 then 0
+    elif n = 1 then 1
+    else
+        for i = 0 to n - 2 do
+            let temp = !curr + !prev
+            prev := !curr
+            curr := temp
+        !curr
+
         
 
 [<EntryPoint>]
@@ -316,5 +332,17 @@ let main argv =
     printfn "\n"
 
     //  -------------------
+
+    printfn "Problem 11\n"
+    
+    for i = 0 to 6 do 
+        printfn "imperativeFib %A = %A" i (imperativeFib i)
+    printfn "imperativeFib 17 = %A \n" <| imperativeFib 17
+  
+    printfn "\n"
+
+    //  -------------------
+    
+
     Console.ReadKey() |> ignore
     0
