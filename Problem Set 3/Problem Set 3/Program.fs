@@ -444,6 +444,19 @@ let main argv =
         printfn "functionalFact %A = %A" i (functionalFact i)
     printfn ""
 
+    let timeImperative = System.Diagnostics.Stopwatch.StartNew()
+    for i = 0 to 15 do
+        imperativeFact i |> ignore
+    timeImperative.Stop()
+    
+    let timeFunctional = System.Diagnostics.Stopwatch.StartNew()
+    for i = 0 to 15 do
+        functionalFact i |> ignore
+    timeFunctional.Stop()
+
+    printfn "Execution time imperativeFib (from 0 to 15) = %f ms." timeImperative.Elapsed.TotalMilliseconds
+    printfn "Execution time functionalFib (from 0 to 15) = %f ms." timeFunctional.Elapsed.TotalMilliseconds 
+
     printfn "\n"
        
     //  -------------------
