@@ -233,6 +233,19 @@ let student =
     }
 
 
+// P13 - Using imperative F#, create a tuple for an integer stack, including push, pop, top and 
+// isEmpty functions. Use the stack to implement factorial. Use a loop to push all the values from 
+// 1 through the parameter, then use another loop to pop the values and calculate factorial. 
+// Compare the timing with a tail-recursive factorial.
+
+let stack init =
+    let stackList = ref init
+    ( (fun elem -> stackList := elem :: !stackList),  // push
+      (fun () -> stackList := List.tail !stackList),  // pop
+      (fun () -> List.head !stackList),               // top
+      (fun () -> List.isEmpty !stackList) )           // isEmpty
+
+
 [<EntryPoint>]
 let main argv =
 
