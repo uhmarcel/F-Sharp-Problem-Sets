@@ -212,6 +212,27 @@ let functionalFib n =
     loop 1 0 n
         
 
+// P12 - Using imperative F#, create a record type for a student. The record will have a function 
+// that returns the student's GPA, a function that adds credit hours and a function that adds 
+// grade points. Initialize an instance of the record with appropriate functions and values. 
+// Use the instance to add grade points and credits several times, and display the GPA.
+
+type Student = {
+    getGPA: unit -> float; 
+    addCreditHrs: int -> unit;
+    addGradePts: float -> unit
+}
+
+let student =
+    let gradePoints = ref 0.0
+    let creditHrs = ref 0
+    { 
+        getGPA = fun () -> if !creditHrs = 0 then failwith "No credit hours" else !gradePoints / float (!creditHrs);
+        addCreditHrs = fun c -> creditHrs := !creditHrs + c;
+        addGradePts = fun g -> gradePoints := !gradePoints + g
+    }
+
+
 [<EntryPoint>]
 let main argv =
 
@@ -361,13 +382,26 @@ let main argv =
     printfn "Execution time imperativeFib (from 0 to 50) = %f ms." timeImperative.Elapsed.TotalMilliseconds
     printfn "Execution time functionalFib (from 0 to 50) = %f ms." timeFunctional.Elapsed.TotalMilliseconds 
     
-
-
-    
-
-  
     printfn "\n"
+       
+    //  -------------------
+    
+    printfn "Problem 12\n"
+    
+    student.addCreditHrs 3
+    student.addGradePts 10.0
+    printfn "student GPA = %A" <| student.getGPA()
 
+    student.addCreditHrs 6
+    student.addGradePts 22.0
+    printfn "student GPA = %A" <| student.getGPA()
+
+    student.addCreditHrs 12
+    student.addGradePts 32.0
+    printfn "student GPA = %A \n" <| student.getGPA()
+
+    printfn "\n"
+       
     //  -------------------
     
 
