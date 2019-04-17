@@ -256,6 +256,12 @@ let imperativeFact n =
         pop()
     !result
 
+let functionalFact n =
+    let rec loop acc = function
+        | 0 -> acc
+        | n -> loop (n * acc) (n - 1)
+    loop 1 n
+
 
 [<EntryPoint>]
 let main argv =
@@ -428,6 +434,19 @@ let main argv =
        
     //  -------------------
     
+    printfn "Problem 13\n"
+    
+    for i = 0 to 6 do
+        printfn "imperativeFact %A = %A" i (imperativeFact i)
+    printfn ""
 
+    for i = 0 to 6 do
+        printfn "functionalFact %A = %A" i (functionalFact i)
+    printfn ""
+
+    printfn "\n"
+       
+    //  -------------------
+    
     Console.ReadKey() |> ignore
     0
