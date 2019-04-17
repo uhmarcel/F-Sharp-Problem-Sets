@@ -343,10 +343,27 @@ let main argv =
     for i = 0 to 6 do 
         printfn "imperativeFib %A = %A" i (imperativeFib i)
     printfn ""
-
+    
     for i = 0 to 6 do 
         printfn "functionalFib %A = %A" i (functionalFib i)
     printfn ""
+    
+    let timeImperative = System.Diagnostics.Stopwatch.StartNew()
+    for i = 0 to 50 do
+        imperativeFib i |> ignore
+    timeImperative.Stop()
+    
+    let timeFunctional = System.Diagnostics.Stopwatch.StartNew()
+    for i = 0 to 50 do
+        functionalFib i |> ignore
+    timeFunctional.Stop()
+
+    printfn "Execution time imperativeFib (from 0 to 50) = %f ms." timeImperative.Elapsed.TotalMilliseconds
+    printfn "Execution time functionalFib (from 0 to 50) = %f ms." timeFunctional.Elapsed.TotalMilliseconds 
+    
+
+
+    
 
   
     printfn "\n"
