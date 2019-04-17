@@ -197,7 +197,6 @@ let imperativeFib n =
     let prev = ref 0
     
     if n = 0 then 0
-    elif n = 1 then 1
     else
         for i = 0 to n - 2 do
             let temp = !curr + !prev
@@ -205,6 +204,12 @@ let imperativeFib n =
             curr := temp
         !curr
 
+let functionalFib n = 
+    let rec loop curr prev = function
+        | 0 -> 0
+        | 1 -> curr
+        | n -> loop (curr + prev) curr (n-1)
+    loop 1 0 n
         
 
 [<EntryPoint>]
@@ -337,7 +342,12 @@ let main argv =
     
     for i = 0 to 6 do 
         printfn "imperativeFib %A = %A" i (imperativeFib i)
-    printfn "imperativeFib 17 = %A \n" <| imperativeFib 17
+    printfn ""
+
+    for i = 0 to 6 do 
+        printfn "functionalFib %A = %A" i (functionalFib i)
+    printfn ""
+
   
     printfn "\n"
 
