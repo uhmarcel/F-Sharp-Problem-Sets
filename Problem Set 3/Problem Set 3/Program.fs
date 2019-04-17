@@ -245,6 +245,17 @@ let stack init =
       (fun () -> List.head !stackList),               // top
       (fun () -> List.isEmpty !stackList) )           // isEmpty
 
+let imperativeFact n =
+    let (push, pop, top, isEmpty) = stack []
+    let result = ref 1
+
+    for i = 1 to n do
+        push i
+    while not (isEmpty()) do
+        result := !result * top()
+        pop()
+    !result
+
 
 [<EntryPoint>]
 let main argv =
