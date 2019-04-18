@@ -16,14 +16,16 @@ let rec toLinkedList = function
     | x::xs -> Node (x, toLinkedList xs)
 
 
+
 // P3 - A palindrome is a word that is spelled the same backwards as forwards. Our palindromes
 // will have a vertical bar in the middle, to separate the first half from the second half.
-
 // a) Write a CFG to recognize palindromes over the alphabet {a, b, |}, with the bar in the middle.
-    
-    // S -> aSa | bSb | '|'
-
 // b) Write a parse function that accepts a string and generates tokens for the language.
+// c) Write a syntax checker that verifies if a list of tokens represents a palindrome.
+// d) Extend the syntax checker so it generates an abstract syntax tree and displays it, 
+// for valid palindromes.
+    
+// Context-free grammar:  S -> aSa | bSb | '|'
 
 type P3_TOKEN = A | B | BAR | EOF | UNDEF
 
@@ -36,8 +38,6 @@ let parse_P3 string =
                   | '|' -> loop s (BAR::tokens) (n-1)
                   | _ -> loop s (UNDEF::tokens) (n-1)
     loop string [EOF] (string.Length - 1)    
-
-// c) Write a syntax checker that verifies if a list of tokens represents a palindrome.
 
 let eat (T: P3_TOKEN) = function
     | [] -> failwithf "Expected %A" T
@@ -58,9 +58,6 @@ let syntax_P3 program =
         | EOF::[] -> printfn "Program Accepted"
         | EOF::_ -> failwith "EOF not at the end of the program"
         | t::_ -> failwithf "Expected EOF, found %A instead" t
-
-// d) Extend the syntax checker so it generates an abstract syntax tree and displays it, 
-// for valid palindromes.
 
 type SyntaxTree =
     | Br3 of SyntaxTree * SyntaxTree * SyntaxTree  
@@ -90,6 +87,7 @@ let syntax_tree_P3 program =
         | (t::_, _) -> failwithf "Expected EOF, found %A instead" t
 
 
+
 // P5 - Write a tail-recursive F# function interleave(xs,ys) that interleaves two lists
 // Compare the timing of the recursive function from Problem Set 1 with this tail-recursive
 // version. Time these examples in both versions.
@@ -101,6 +99,7 @@ let interleave xs ys =
         | x::xs, y::ys -> loop (y::x::acc) (xs, ys)
     loop [] (xs, ys)
         
+
 
 // P6 - Alternating series
 // a) Generate an infinite sequence for the alternating series of 1/(2**n):
@@ -121,6 +120,7 @@ let getNth stream n =
     inner (stream LanguagePrimitives.GenericZero) n
 
 let rec alternatingStream n =  Cons ((-1.0)**n / 2.0**(n + 1.0), fun () -> alternatingStream (n + 1.0))
+
 
 
 // P7 - Multiples of a list
@@ -152,7 +152,6 @@ let rec applyFilters stream = function
     | [] -> stream
     | f::fs -> applyFilters (filter (fun y -> y % f = 0) stream) fs
 
-
 let naturalSequence = Seq.initInfinite( fun n -> n )
 let naturalEnumerator = naturalSequence.GetEnumerator()
 naturalEnumerator.MoveNext() |> ignore
@@ -177,6 +176,7 @@ let moveFilteredSeq fs n =
     for i = 1 to n do moveNextFilter fs |> ignore
 
 
+
 // P8 - Create a tail-recursive function that has a big integer as input and calculates 2I 
 // raised to that power.
 // Calculate these powers of 2I: 0I, 1I, 2I, 4I, 16I, 256I, 1024I, 32768I and 65536I.
@@ -187,6 +187,7 @@ let exponential n =
         elif n = 1I then acc
         else loop (2I * acc) (n - 1I) 
     loop 2I n
+
 
 
 // P11 - Write a non-recursive fibonacci function using imperative F#.
@@ -212,6 +213,7 @@ let functionalFib n =
     loop 1 0 n
         
 
+
 // P12 - Using imperative F#, create a record type for a student. The record will have a function 
 // that returns the student's GPA, a function that adds credit hours and a function that adds 
 // grade points. Initialize an instance of the record with appropriate functions and values. 
@@ -231,6 +233,7 @@ let student =
         addCreditHrs = fun c -> creditHrs := !creditHrs + c;
         addGradePts = fun g -> gradePoints := !gradePoints + g
     }
+
 
 
 // P13 - Using imperative F#, create a tuple for an integer stack, including push, pop, top and 
@@ -262,6 +265,37 @@ let functionalFact n =
         | n -> loop (n * acc) (n - 1)
     loop 1 n
 
+
+
+// P15 - An interesting use of first-class functions and ref cells in F# is to create a monitored 
+// version of a function ...
+// First, explain why F# does not allow the following declaration:
+// let mrev = makeMonitoredFun List.rev
+// Now suppose we rewrite the declaration using the technique of eta expansion:
+// let mrev = fun x -> (makeMonitoredFun List.rev) x
+// Does this solve the problem? Explain why or why not.
+
+let makeMonitoredFun f =
+    let c = ref 0
+    (fun x -> c := !c + 1; printf "Called %d times.\n" !c; f x)
+
+let m_sqrt = makeMonitoredFun sqrt
+
+    // let m_rev = makeMonitoredFun List.rev 
+    // Function makeMonitoredFun has poliphormic type, therefore its input must be 
+    // a syntactic value.
+    // In the case of sqrt we know its type (float -> float) thus it compiles.
+    // In the case of rev, it is a polyphormic type (a' list -> 'a list), thus 
+    // value restriction is applied, not allowing to compile.
+
+let m_rev = fun x -> (makeMonitoredFun List.rev) x
+    
+    // Works as it is an eta funciton: implements lazy evaluation to avoid the value
+    // restriction. Regardless of this trick working, the imperative part of the code 
+    // (the monitor) does not work, as it does not increments the value.
+
+
+// Test Workspace - Main
 
 [<EntryPoint>]
 let main argv =
@@ -456,6 +490,15 @@ let main argv =
 
     printfn "Execution time imperativeFib (from 0 to 15) = %f ms." timeImperative.Elapsed.TotalMilliseconds
     printfn "Execution time functionalFib (from 0 to 15) = %f ms." timeFunctional.Elapsed.TotalMilliseconds 
+
+    printfn "\n"
+       
+    //  -------------------
+
+    printfn "Problem 15\n"
+    
+    printfn "m_sqrt 16.0 + m_sqrt 25.0 + m_sqrt 9.0 = %A \n" <| m_sqrt 16.0 + m_sqrt 25.0 + m_sqrt 9.0
+    printfn "m_rev [1..5] @ m_rev [5..8] @ m_rev [1..3] = %A \n" <| m_rev [1..5] @ m_rev [5..8] @ m_rev [1..3]
 
     printfn "\n"
        
