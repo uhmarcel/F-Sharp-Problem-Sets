@@ -9,11 +9,14 @@ open System
 let rec interp = function
     | APP (e1, e2) ->
         match (interp e1, interp e2) with
-        | (ERROR s, _)  -> ERROR s        // ERRORs are propagated
+        | (ERROR s, _)  -> ERROR s 
         | (_, ERROR s)  -> ERROR s
-        | (SUCC, NUM n) -> NUM (n+1)      // Rule (6)
-        | (SUCC, v)     -> ERROR (sprintf "'succ' needs int argument, not '%A'" v)
-    | n -> n
+        | (SUCC, NUM n) -> NUM (n + 1) 
+        | (SUCC, x)     -> ERROR (sprintf "'succ' expects int argument, not '%A'" x)
+        | (PRED, NUM 0) -> ERROR "'pred' is not defined for zero"
+        | (PRED, NUM n) -> NUM (n - 1)
+        | (PRED, x)     -> ERROR (sprintf "'pred' expects int argument, not '%A'" x)
+    | t -> t
 
 
 
@@ -36,6 +39,14 @@ let main argv =
 
     displayInterpstr "succ 0"
     displayInterpstr "succ 1"
+    displayInterpstr "pred 0"
+    displayInterpstr "pred 10"
+    displayInterpstr "succ (succ (succ 0))"
+
+
+    // Parser output test
+
+    printfn "\nTest: %A" <| parsestr "succ (succ (succ 0))"
 
     Console.ReadKey() |> ignore
     0
