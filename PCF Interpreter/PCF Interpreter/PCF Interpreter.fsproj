@@ -7,19 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="ackermann.pcf" />
-    <None Include="complex1.pcf" />
-    <None Include="complex2.pcf" />
-    <None Include="complex3.pcf" />
-    <None Include="complex4.pcf" />
-    <None Include="divisor.pcf" />
-    <None Include="double.pcf" />
-    <None Include="factorial.pcf" />
-    <None Include="fibonacci.pcf" />
-    <None Include="if.pcf" />
-    <None Include="lists.pcf" />
-    <None Include="minus.pcf" />
-    <None Include="twice.pcf" />
     <Compile Include="parser.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

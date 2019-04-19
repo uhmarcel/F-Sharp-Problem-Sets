@@ -19,7 +19,18 @@ let rec interp = function
             | (ISZERO, NUM 0) -> BOOL true
             | (ISZERO, NUM _) -> BOOL false
             | (ISZERO, x)     -> ERROR (sprintf "'iszero' expects int argument, not '%A'" x)
-    | t -> t
+    //| IF (e1, e2, e3) ->
+    //    match (interp e1, interp e2, interp e3) with
+    //        | (ERROR s, _, _) -> ERROR s
+    //        | (_, ERROR s, _) -> ERROR s
+    //        | (_, _, ERROR s) -> ERROR s
+    //        | (BOOL true, )
+    | NUM n -> NUM n
+    | BOOL b -> BOOL b
+    | SUCC -> SUCC
+    | PRED -> PRED
+    | ISZERO -> ISZERO
+  
 
 
 
@@ -51,7 +62,8 @@ let main argv =
 
     // Parser output test
 
-    printfn "\nTest: %A" <| parsestr "succ (succ (succ 0))"
+    printfn "\nTest: %A" <| parsefile "if.pcf"
+    printfn "\nTest: %A" <| parsestr "succ 0"
 
     Console.ReadKey() |> ignore
     0
