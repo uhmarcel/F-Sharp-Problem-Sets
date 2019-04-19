@@ -29,6 +29,7 @@ let rec interp = function
             | (ISZERO, NUM 0) -> BOOL true
             | (ISZERO, NUM _) -> BOOL false
             | (ISZERO, x)     -> ERROR (sprintf "'iszero' expects int argument, not '%A'" x)
+            | (FUN (s, e1), t) -> interp (subst e1 s t)
             | (_, _) -> ERROR "Not implemented yet"
     | IF (e1, e2, e3) ->
         match (interp e1, interp e2, interp e3) with
@@ -38,6 +39,8 @@ let rec interp = function
             | (BOOL true, v1, _)  -> v1
             | (BOOL false, _, v2) -> v2
             | (x, _, _)       -> ERROR (sprintf "'if' expects a bool argument, not %A" x)
+    | ID s -> ERROR (sprintf "Undefined identifier %A" s)
+    | FUN (s, e1) -> FUN (s, e1)
     | NUM n -> NUM n
     | BOOL b -> BOOL b
     | SUCC -> SUCC
@@ -89,12 +92,21 @@ let main argv =
     displaySubst SUCC "a" (NUM 3)
     displaySubst (APP(SUCC, ID "a")) "a" (NUM 3)
     displaySubst (IF (BOOL true, FUN ("a", APP (SUCC, ID "a")), FUN ("b", APP (SUCC, ID "a")))) "a" (NUM 3)
+    printfn ""
+
+    // Part C
+    displayInterpstr "(fun x -> succ x) 4"
+    displayInterpstr "(fun x -> fun y -> fun z -> if iszero x then succ y else pred z) 0 10 20"
+    displayInterpstr "(fun x -> fun y -> fun x -> if iszero x then succ y else pred x) 0 10 20"
+    displayInterpfile "twice.pcf"
+
+
 
     // Parser output test
 
     printfn "\n Extra tests"
     printfn "Test: %A" <| parsefile "if.pcf"
-    printfn "Test: %A" <| parsestr "succ 0"
+    printfn "Test: %A" <| parsestr "(fun x -> succ x) 4"
     printfn "%A" <| subst (APP(SUCC, ID "x")) "x" (NUM 1)
 
     Console.ReadKey() |> ignore
