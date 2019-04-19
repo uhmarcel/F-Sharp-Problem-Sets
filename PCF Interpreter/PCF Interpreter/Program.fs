@@ -2,7 +2,6 @@
 
 open Parser.Parse
 open System
-open Parser.Lex
 
 
 // PCF interpreter
@@ -13,7 +12,7 @@ let rec subst e x t =
         | APP (e1, e2) -> APP (subst e1 x t, subst e2 x t)
         | IF (e1, e2, e3) -> IF (subst e1 x t, subst e2 x t, subst e3 x t)
         | FUN (s, e1) when s <> x -> FUN (s, subst e1 x t)
-        | REC (s, e1) when s <> x -> FUN (s, subst e1 x t)
+        | REC (s, e1) when s <> x -> REC (s, subst e1 x t)
         | term -> term
 
 let rec interp = function
@@ -22,42 +21,36 @@ let rec interp = function
             | (ERROR s, _) -> ERROR s 
             | (_, ERROR s) -> ERROR s
             | (SUCC, NUM n) -> NUM (n + 1) 
-            | (SUCC, x)     -> ERROR (sprintf "'succ' expects int argument, not '%A'" x)
-            | (PRED, NUM 0) -> ERROR "'pred' is not defined for zero"
+            | (SUCC, x)     -> ERROR <| sprintf "'succ' expects int argument, not '%A'" x
+            | (PRED, NUM 0) -> NUM 0
             | (PRED, NUM n) -> NUM (n - 1)
-            | (PRED, x)     -> ERROR (sprintf "'pred' expects int argument, not '%A'" x)
+            | (PRED, x)     -> ERROR <| sprintf "'pred' expects int argument, not '%A'" x
             | (ISZERO, NUM 0) -> BOOL true
             | (ISZERO, NUM _) -> BOOL false
-            | (ISZERO, x)     -> ERROR (sprintf "'iszero' expects int argument, not '%A'" x)
+            | (ISZERO, x)     -> ERROR <| sprintf "'iszero' expects int argument, not '%A'" x
             | (FUN (s, e1), t) -> interp (subst e1 s t)
-            | (_, _) -> ERROR "Not implemented yet"
+            | (_, _) -> ERROR "Invalid application, or not implemented yet"
     | IF (e1, e2, e3) ->
-        match (interp e1, interp e2, interp e3) with
+        match (interp e1, e2, e3) with
             | (ERROR s, _, _) -> ERROR s
-            | (_, ERROR s, _) -> ERROR s
-            | (_, _, ERROR s) -> ERROR s
-            | (BOOL true, v1, _)  -> v1
-            | (BOOL false, _, v2) -> v2
-            | (x, _, _)       -> ERROR (sprintf "'if' expects a bool argument, not %A" x)
-    | ID s -> ERROR (sprintf "Undefined identifier %A" s)
+            | (BOOL true, v1, _)  -> interp v1
+            | (BOOL false, _, v2) -> interp v2
+            | (x, _, _)       -> ERROR <| sprintf "'if' expects a bool argument, not %A" x
+    | REC (s, e1) -> interp (subst e1 s (REC (s, e1)))
+    | ID s -> ERROR <| sprintf "Undefined identifier %A" s
     | FUN (s, e1) -> FUN (s, e1)
     | NUM n -> NUM n
     | BOOL b -> BOOL b
     | SUCC -> SUCC
     | PRED -> PRED
     | ISZERO -> ISZERO
-    | _ -> ERROR "Not implemented yet"
+    | t -> ERROR <| sprintf "Unrecognized token %A, or not implemented yet" t 
   
 
-
-
 // Interpreter abbreviations
-
 let interpfile filename = filename |> parsefile |> interp
 let interpstr sourcecode = sourcecode |> parsestr |> interp
 
-
-// Test Workspace
 
 
 [<EntryPoint>]
@@ -65,6 +58,7 @@ let main argv =
 
     printfn "Testing PCF Interpreter \n"
     
+    // Testing abbreviations
     let displayInterpstr s = printfn "String %A -> %A" s (interpstr s)
     let displayInterpfile s = printfn "File %s -> %A" s (interpfile s)
     let displaySubst e x t = printfn "Subst [%A] [%A -> %A] = %A" e x t (subst e x t)
@@ -99,15 +93,17 @@ let main argv =
     displayInterpstr "(fun x -> fun y -> fun z -> if iszero x then succ y else pred z) 0 10 20"
     displayInterpstr "(fun x -> fun y -> fun x -> if iszero x then succ y else pred x) 0 10 20"
     displayInterpfile "twice.pcf"
+    printfn ""
 
+    // Part D
+    displayInterpfile "double.pcf"
+    displayInterpfile "minus.pcf"
+    displayInterpfile "fibonacci.pcf"
+    displayInterpfile "factorial.pcf"
+    displayInterpfile "divisor.pcf"
+    displayInterpfile "lists.pcf"
+    displayInterpfile "ackermann.pcf"
 
-
-    // Parser output test
-
-    printfn "\n Extra tests"
-    printfn "Test: %A" <| parsefile "if.pcf"
-    printfn "Test: %A" <| parsestr "(fun x -> succ x) 4"
-    printfn "%A" <| subst (APP(SUCC, ID "x")) "x" (NUM 1)
 
     Console.ReadKey() |> ignore
     0
