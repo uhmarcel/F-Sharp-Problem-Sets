@@ -2,9 +2,17 @@
 
 open Parser.Parse
 open System
+open Parser.Lex
 
 
 // PCF interpreter
+
+let rec subst e x t =
+    match e with
+        | ID n when n = x -> t
+        | APP (e1, e2) -> APP (subst e1 x t, subst e2 x t)
+        | IF (e1, e2, e3) -> IF (subst e1 x t, subst e2 x t, subst e3 x t)
+        | term -> term
 
 let rec interp = function
     | APP (e1, e2) ->
@@ -19,6 +27,7 @@ let rec interp = function
             | (ISZERO, NUM 0) -> BOOL true
             | (ISZERO, NUM _) -> BOOL false
             | (ISZERO, x)     -> ERROR (sprintf "'iszero' expects int argument, not '%A'" x)
+            | (_, _) -> ERROR "Not implemented yet"
     | IF (e1, e2, e3) ->
         match (interp e1, interp e2, interp e3) with
             | (ERROR s, _, _) -> ERROR s
@@ -32,6 +41,7 @@ let rec interp = function
     | SUCC -> SUCC
     | PRED -> PRED
     | ISZERO -> ISZERO
+    | _ -> ERROR "Not implemented yet"
   
 
 
@@ -50,7 +60,7 @@ let main argv =
 
     printfn "Testing PCF Interpreter \n"
     
-    let displayInterpstr s = printfn "%A -> %A" s (interpstr s)
+    let displayInterpstr s = printfn "String %A -> %A" s (interpstr s)
     let displayInterpfile s = printfn "File %s -> %A" s (interpfile s)
 
     // Part A:
@@ -62,6 +72,7 @@ let main argv =
     displayInterpstr "iszero succ"
     displayInterpstr "succ pred 7"
     displayInterpstr "succ (pred 7)"
+    displayInterpstr "if succ 4 then 0 else 1"
     displayInterpfile "if.pcf"
     displayInterpfile "complex1.pcf"
     displayInterpfile "complex2.pcf"
@@ -70,8 +81,10 @@ let main argv =
 
     // Parser output test
 
-    printfn "\nTest: %A" <| parsefile "if.pcf"
-    printfn "\nTest: %A" <| parsestr "succ 0"
+    printfn "\n Extra tests"
+    printfn "Test: %A" <| parsefile "if.pcf"
+    printfn "Test: %A" <| parsestr "succ 0"
+    printfn "%A" <| subst (APP(SUCC, ID "x")) "x" (NUM 1)
 
     Console.ReadKey() |> ignore
     0
