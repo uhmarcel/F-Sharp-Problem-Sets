@@ -53,6 +53,7 @@ let main argv =
     let displayInterpstr s = printfn "%A -> %A" s (interpstr s)
     let displayInterpfile s = printfn "File %s -> %A" s (interpfile s)
 
+    // Part A:
     displayInterpstr "succ 0"
     displayInterpstr "succ 1"
     displayInterpstr "pred 0"
@@ -62,6 +63,10 @@ let main argv =
     displayInterpstr "succ pred 7"
     displayInterpstr "succ (pred 7)"
     displayInterpfile "if.pcf"
+    displayInterpfile "complex1.pcf"
+    displayInterpfile "complex2.pcf"
+    displayInterpfile "complex3.pcf"
+    displayInterpfile "complex4.pcf"
 
     // Parser output test
 
