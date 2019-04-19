@@ -12,6 +12,8 @@ let rec subst e x t =
         | ID n when n = x -> t
         | APP (e1, e2) -> APP (subst e1 x t, subst e2 x t)
         | IF (e1, e2, e3) -> IF (subst e1 x t, subst e2 x t, subst e3 x t)
+        | FUN (s, e1) when s <> x -> FUN (s, subst e1 x t)
+        | REC (s, e1) when s <> x -> FUN (s, subst e1 x t)
         | term -> term
 
 let rec interp = function
@@ -62,6 +64,7 @@ let main argv =
     
     let displayInterpstr s = printfn "String %A -> %A" s (interpstr s)
     let displayInterpfile s = printfn "File %s -> %A" s (interpfile s)
+    let displaySubst e x t = printfn "Subst [%A] [%A -> %A] = %A" e x t (subst e x t)
 
     // Part A:
     displayInterpstr "succ 0"
@@ -78,6 +81,14 @@ let main argv =
     displayInterpfile "complex2.pcf"
     displayInterpfile "complex3.pcf"
     displayInterpfile "complex4.pcf"
+    printfn ""
+
+    // Part B
+    displaySubst (NUM 6) "a" (NUM 3)
+    displaySubst (BOOL true) "a" (NUM 3)
+    displaySubst SUCC "a" (NUM 3)
+    displaySubst (APP(SUCC, ID "a")) "a" (NUM 3)
+    displaySubst (IF (BOOL true, FUN ("a", APP (SUCC, ID "a")), FUN ("b", APP (SUCC, ID "a")))) "a" (NUM 3)
 
     // Parser output test
 
