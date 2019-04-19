@@ -9,13 +9,16 @@ open System
 let rec interp = function
     | APP (e1, e2) ->
         match (interp e1, interp e2) with
-        | (ERROR s, _)  -> ERROR s 
-        | (_, ERROR s)  -> ERROR s
-        | (SUCC, NUM n) -> NUM (n + 1) 
-        | (SUCC, x)     -> ERROR (sprintf "'succ' expects int argument, not '%A'" x)
-        | (PRED, NUM 0) -> ERROR "'pred' is not defined for zero"
-        | (PRED, NUM n) -> NUM (n - 1)
-        | (PRED, x)     -> ERROR (sprintf "'pred' expects int argument, not '%A'" x)
+            | (ERROR s, _) -> ERROR s 
+            | (_, ERROR s) -> ERROR s
+            | (SUCC, NUM n) -> NUM (n + 1) 
+            | (SUCC, x)     -> ERROR (sprintf "'succ' expects int argument, not '%A'" x)
+            | (PRED, NUM 0) -> ERROR "'pred' is not defined for zero"
+            | (PRED, NUM n) -> NUM (n - 1)
+            | (PRED, x)     -> ERROR (sprintf "'pred' expects int argument, not '%A'" x)
+            | (ISZERO, NUM 0) -> BOOL true
+            | (ISZERO, NUM _) -> BOOL false
+            | (ISZERO, x)     -> ERROR (sprintf "'iszero' expects int argument, not '%A'" x)
     | t -> t
 
 
@@ -42,7 +45,9 @@ let main argv =
     displayInterpstr "pred 0"
     displayInterpstr "pred 10"
     displayInterpstr "succ (succ (succ 0))"
-
+    displayInterpstr "iszero succ"
+    displayInterpstr "succ pred 7"
+    displayInterpstr "succ (pred 7)"
 
     // Parser output test
 
