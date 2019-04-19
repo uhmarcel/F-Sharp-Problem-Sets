@@ -19,12 +19,14 @@ let rec interp = function
             | (ISZERO, NUM 0) -> BOOL true
             | (ISZERO, NUM _) -> BOOL false
             | (ISZERO, x)     -> ERROR (sprintf "'iszero' expects int argument, not '%A'" x)
-    //| IF (e1, e2, e3) ->
-    //    match (interp e1, interp e2, interp e3) with
-    //        | (ERROR s, _, _) -> ERROR s
-    //        | (_, ERROR s, _) -> ERROR s
-    //        | (_, _, ERROR s) -> ERROR s
-    //        | (BOOL true, )
+    | IF (e1, e2, e3) ->
+        match (interp e1, interp e2, interp e3) with
+            | (ERROR s, _, _) -> ERROR s
+            | (_, ERROR s, _) -> ERROR s
+            | (_, _, ERROR s) -> ERROR s
+            | (BOOL true, v1, _)  -> v1
+            | (BOOL false, _, v2) -> v2
+            | (x, _, _)       -> ERROR (sprintf "'if' expects a bool argument, not %A" x)
     | NUM n -> NUM n
     | BOOL b -> BOOL b
     | SUCC -> SUCC
@@ -48,8 +50,8 @@ let main argv =
 
     printfn "Testing PCF Interpreter \n"
     
-    let displayInterpstr s = printfn "%s -> %A" s (interpstr s)
-    let displayInterpfile s = printfn "%s -> %A" s (interpfile s)
+    let displayInterpstr s = printfn "%A -> %A" s (interpstr s)
+    let displayInterpfile s = printfn "File %s -> %A" s (interpfile s)
 
     displayInterpstr "succ 0"
     displayInterpstr "succ 1"
@@ -59,6 +61,7 @@ let main argv =
     displayInterpstr "iszero succ"
     displayInterpstr "succ pred 7"
     displayInterpstr "succ (pred 7)"
+    displayInterpfile "if.pcf"
 
     // Parser output test
 
