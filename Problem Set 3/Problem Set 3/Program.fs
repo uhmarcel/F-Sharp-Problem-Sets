@@ -1,5 +1,6 @@
 ﻿
 open System
+open System
 
 
 // P1 - Building a simple tree.
@@ -295,6 +296,33 @@ let m_rev = fun x -> (makeMonitoredFun List.rev) x
     // (the monitor) does not work, as it does not increments the value.
 
 
+// P18 - Measures 
+// a) Declare type measures for seconds, microseconds, milliseconds, and nanoseconds.
+// b) Declare constants for the number of seconds in each of the other types.
+// c) Create functions that convert seconds to each of the other types.
+// d) Create functions that convert each of the other types to seconds.
+// e) Convert 5000 milliseconds to seconds and then to microseconds.
+// f) Convert 0.00000009 seconds to microseconds and to nanoseconds.
+
+[<Measure>] type s
+[<Measure>] type ms
+[<Measure>] type us
+[<Measure>] type ns
+
+let MILLISECONDS = 0.001<s/ms>
+let MICROSECONDS = 0.000001<s/us>
+let NANOSECONDS = 0.000000001<s/ns>
+
+let convertToMS (t: float<s>) = t / MILLISECONDS
+let convertToUS (t: float<s>) = t / MICROSECONDS
+let convertToNS (t: float<s>) = t / NANOSECONDS
+
+let convertMStoS (t:float<ms>) = t * MILLISECONDS
+let convertUStoS (t:float<us>) = t * MICROSECONDS
+let convertNStoS (t:float<ns>) = t * NANOSECONDS
+
+
+
 // Test Workspace - Main
 
 [<EntryPoint>]
@@ -503,6 +531,23 @@ let main argv =
     printfn "\n"
        
     //  -------------------
+
+    printfn "Problem 18\n"
+    
+    printfn "5000 milliseconds:"
+    printfn "to seconds = %A" <| convertMStoS 5000.0<ms>
+    printfn "to microseconds = %A" <| ( 5000.0<ms> |> convertMStoS |> convertToUS )
+    printfn ""
+
+    printfn "0.00000009 seconds:"
+    printfn "to microseconds = %A" <| convertToUS 0.00000009<s>
+    printfn "to nanoseconds = %A" <| convertToNS 0.00000009<s>
+    printfn ""
+
+    printfn "\n"
+       
+    //  -------------------
     
     Console.ReadKey() |> ignore
     0
+    
