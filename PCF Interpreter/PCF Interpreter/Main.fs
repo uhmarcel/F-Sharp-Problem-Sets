@@ -48,13 +48,13 @@ let main argv =
     printfn ""
 
     // Part D
-    //displayInterpfile "double.pcf"
-    //displayInterpfile "minus.pcf"
-    //displayInterpfile "fibonacci.pcf"
-    //displayInterpfile "factorial.pcf"
-    //displayInterpfile "divisor.pcf"     // Commented out for now to run main faster 
-    //displayInterpfile "lists.pcf"
-    //displayInterpfile "ackermann.pcf"
+    displayInterpfile "double.pcf"
+    displayInterpfile "minus.pcf"
+    displayInterpfile "fibonacci.pcf"
+    displayInterpfile "factorial.pcf"
+    displayInterpfile "divisor.pcf"     // Commented out for now to run main faster 
+    displayInterpfile "lists.pcf"
+    displayInterpfile "ackermann.pcf"
     printfn "\n"
     
     printfn "2 - Testing PCF Type Inference \n"

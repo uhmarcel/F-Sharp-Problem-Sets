@@ -99,17 +99,16 @@ let rec W (env, e) =
         | PRED _ -> (I, ARROW (INTEGER, INTEGER))
         | ISZERO _ -> (I, ARROW (INTEGER, BOOLEAN))
         | APP (e1, e2) -> 
-            match e1, e2 with
-                | SUCC, NUM _ -> (I, INTEGER)
-                | PRED, NUM _ -> (I, INTEGER)
-                | ISZERO, NUM _ -> (I, BOOLEAN)
-                | _ -> failwith "Not implemented yet"
+            let (s1, t1) = W (env, e2)  // infer APP right side
+            let (s2, ARROW (input, output)) = W (s1 << env, e1) // infer APP left side
+            let s3 = unify (input, t1)
+            (s3 << s2 << s1, output)
         | FUN (x, e1) ->
             let env = update env x (newtypevar())   // Add new type for 's' to env
             let (s1, t1) = W (env, e1)
             let env = env >> s1
             (s1, ARROW (env x, t1))
-        | ID s -> (I, env s)
+        | ID x -> (I, env x)
             
             
         | _ -> failwith "Not implemented yet"
