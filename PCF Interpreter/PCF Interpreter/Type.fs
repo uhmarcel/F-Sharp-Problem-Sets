@@ -105,12 +105,11 @@ let rec W (env, e) =
                 | ISZERO, NUM _ -> (I, BOOLEAN)
                 | _ -> failwith "Not implemented yet"
         | FUN (x, e1) ->
-            //let (s1, t1) = W (env, e1)
-            let env2 = update env x (newtypevar())
-            let (s1, t1) = W (env2, ID x)
-            printfn "%A testing" <| t1
-            (s1, t1)
-        | ID x -> (I, env x)
+            let env = update env x (newtypevar())   // Add new type for 's' to env
+            let (s1, t1) = W (env, e1)
+            let env = env >> s1
+            (s1, ARROW (env x, t1))
+        | ID s -> (I, env s)
             
             
         | _ -> failwith "Not implemented yet"

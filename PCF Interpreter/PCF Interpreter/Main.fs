@@ -74,6 +74,16 @@ let main argv =
     infer (FUN ("n", NUM 7))
     infer (FUN ("x", ID "x"))
     infer (FUN ("b", IF (ID "b", NUM 1, NUM 0)))
+    infer (FUN ("n", APP (SUCC, ID "n")))
+    //infer (FUN ("f", APP (ID "f", NUM 7)))
+    //infer (FUN ("f", APP (ID "f", APP (ID "f", BOOL true))))
+    //infer (FUN ("x", FUN ("y", ID "x")))
+    //infer (FUN ("x", FUN ("y", APP (SUCC, ID "x"))))
+    //infer (FUN ("f", FUN ("x",APP (ID "f",APP (ID "f",ID "x")))))
+    //infer (FUN ("f", FUN ("g", FUN ("x",APP (ID "f",APP (ID "g",ID "x"))))))
+    //infer (FUN ("x", FUN ("y", FUN ("b", IF (ID "b", ID "x", ID "y")))))
+    //infer (FUN ("x", FUN ("y", FUN ("z", ID "z"))))
+    //infer (FUN ("x", FUN ("y", ID "z"))) //This should cause an 'unbound variable' error.
     printfn ""
 
     Console.ReadKey() |> ignore
