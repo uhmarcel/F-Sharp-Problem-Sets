@@ -7,8 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="parser.fs" />
-    <Compile Include="Program.fs" />
+    <Compile Include="Parser.fs" />
+    <Compile Include="Interpreter.fs" />
+    <Compile Include="Type.fs" />
+    <Compile Include="Main.fs" />
   </ItemGroup>
 
   <ItemGroup />
