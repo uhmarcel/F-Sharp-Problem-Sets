@@ -9,7 +9,7 @@ open System
 [<EntryPoint>]
 let main argv =
 
-    printfn "Testing PCF Interpreter \n"
+    printfn "1 - Testing PCF Interpreter \n"
  
     let displayInterpstr s = printfn "String %A -> %A" s (interpstr s)
     let displayInterpfile s = printfn "File %s -> %A" s (interpfile s)
@@ -55,12 +55,17 @@ let main argv =
     //displayInterpfile "divisor.pcf"     // Commented out for now to run main faster 
     //displayInterpfile "lists.pcf"
     //displayInterpfile "ackermann.pcf"
-
+    printfn "\n"
     
-    printfn "Testing PCF Type Inference \n"
+    printfn "2 - Testing PCF Type Inference \n"
 
-    test()
-
+    infer (NUM 12)
+    infer (BOOL true)
+    infer (IF(BOOL true, NUM 1, NUM 2))
+    infer (IF(BOOL true, IF(BOOL true, NUM 1, NUM 2), IF(BOOL false, NUM 3, NUM 4)))
+    infer (SUCC)
+    //infer (PRED)
+    //infer (ISZERO)
 
     Console.ReadKey() |> ignore
     0
