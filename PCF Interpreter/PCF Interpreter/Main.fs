@@ -48,13 +48,13 @@ let main argv =
     printfn ""
 
     // Part D
-    displayInterpfile "double.pcf"
-    displayInterpfile "minus.pcf"
-    displayInterpfile "fibonacci.pcf"
-    displayInterpfile "factorial.pcf"
-    displayInterpfile "divisor.pcf"     // Commented out for now to run main faster 
-    displayInterpfile "lists.pcf"
-    displayInterpfile "ackermann.pcf"
+    //displayInterpfile "double.pcf"
+    //displayInterpfile "minus.pcf"
+    //displayInterpfile "fibonacci.pcf"
+    //displayInterpfile "factorial.pcf"
+    //displayInterpfile "divisor.pcf"     // Commented out for now to run main faster 
+    //displayInterpfile "lists.pcf"
+    //displayInterpfile "ackermann.pcf"
     printfn "\n"
     
     printfn "2 - Testing PCF Type Inference \n"
@@ -71,6 +71,9 @@ let main argv =
     infer (APP(ISZERO,NUM 5))
     infer (IF(APP (ISZERO, NUM 0), APP (SUCC, NUM 5), APP (PRED, NUM 50)))
     infer (IF(APP (ISZERO, NUM 0), APP (ISZERO, NUM 5), APP (ISZERO, NUM 50)))
+    infer (FUN ("n", NUM 7))
+    infer (FUN ("x", ID "x"))
+    infer (FUN ("b", IF (ID "b", NUM 1, NUM 0)))
     printfn ""
 
     Console.ReadKey() |> ignore

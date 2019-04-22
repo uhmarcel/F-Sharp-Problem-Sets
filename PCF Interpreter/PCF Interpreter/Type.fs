@@ -104,9 +104,18 @@ let rec W (env, e) =
                 | PRED, NUM _ -> (I, INTEGER)
                 | ISZERO, NUM _ -> (I, BOOLEAN)
                 | _ -> failwith "Not implemented yet"
+        | FUN (x, e1) ->
+            //let (s1, t1) = W (env, e1)
+            let env2 = update env x (newtypevar())
+            let (s1, t1) = W (env2, ID x)
+            printfn "%A testing" <| t1
+            (s1, t1)
+        | ID x -> (I, env x)
+            
+            
         | _ -> failwith "Not implemented yet"
   
-let infer e =
+and infer e =
     reset ();
     let (s, t) = W (emptyenv, e)
     printfn "Infered [%s] from [%A]" (typ2str t) e
