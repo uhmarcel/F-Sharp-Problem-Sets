@@ -96,6 +96,8 @@ let rec W (env, e) =
             let s5 = unify (s4 t2, t3)
             (s5 << s4 << s3 << s2 << s1, s5 t3)
         | SUCC _ -> (I, ARROW (INTEGER, INTEGER))
+        | PRED _ -> (I, ARROW (INTEGER, INTEGER))
+        | ISZERO _ -> (I, ARROW (INTEGER, BOOLEAN))
         | _ -> failwith "Not implemented yet"
   
 let infer e =

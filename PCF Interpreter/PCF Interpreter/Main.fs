@@ -64,8 +64,9 @@ let main argv =
     infer (IF(BOOL true, NUM 1, NUM 2))
     infer (IF(BOOL true, IF(BOOL true, NUM 1, NUM 2), IF(BOOL false, NUM 3, NUM 4)))
     infer (SUCC)
-    //infer (PRED)
-    //infer (ISZERO)
+    infer (PRED)
+    infer (ISZERO)
+    printfn ""
 
     Console.ReadKey() |> ignore
     0
