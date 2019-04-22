@@ -98,6 +98,12 @@ let rec W (env, e) =
         | SUCC _ -> (I, ARROW (INTEGER, INTEGER))
         | PRED _ -> (I, ARROW (INTEGER, INTEGER))
         | ISZERO _ -> (I, ARROW (INTEGER, BOOLEAN))
+        | APP (e1, e2) -> 
+            match e1, e2 with
+                | SUCC, NUM _ -> (I, INTEGER)
+                | PRED, NUM _ -> (I, INTEGER)
+                | ISZERO, NUM _ -> (I, BOOLEAN)
+                | _ -> failwith "Not implemented yet"
         | _ -> failwith "Not implemented yet"
   
 let infer e =

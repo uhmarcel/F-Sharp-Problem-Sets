@@ -66,6 +66,11 @@ let main argv =
     infer (SUCC)
     infer (PRED)
     infer (ISZERO)
+    infer (APP(SUCC,NUM 5))
+    infer (APP(PRED,NUM 5))
+    infer (APP(ISZERO,NUM 5))
+    infer (IF(APP (ISZERO, NUM 0), APP (SUCC, NUM 5), APP (PRED, NUM 50)))
+    infer (IF(APP (ISZERO, NUM 0), APP (ISZERO, NUM 5), APP (ISZERO, NUM 50)))
     printfn ""
 
     Console.ReadKey() |> ignore
